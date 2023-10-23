@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: rgb(25,25,25);
+  --bg-secondary: rgb(32,32,32);
+  --input: rgb(42, 42, 42);
+  --text-secondary: rgb(107,114,128);
+  --accent-primary: rgb(255, 90 ,90);
+  color: white;
+}
+
+body {
+  @apply w-screen h-screen bg-[var(--bg-primary)];
+}
+
+div.form-wrapper {
+  @apply w-screen h-screen flex justify-center items-center;
+}
+
+div.form-wrapper form {
+  @apply w-full h-full md:w-[720px] md:h-fit p-4 bg-[var(--bg-secondary)];
+}
+
+div.form-wrapper form label {
+  @apply text-[var(--text-secondary)];
+}
+
+input {
+  @apply bg-[var(--input)] p-2 outline-none rounded-md;
+}
+
+h1 {
+  @apply text-3xl;
+}
+
+h1.title {
+  @apply text-center font-bold uppercase;
+}
+
+label.title {
+  @apply font-bold uppercase;
+}
+
+button.submit {
+  @apply bg-[var(--accent-primary)] p-2 rounded-md;
+}
