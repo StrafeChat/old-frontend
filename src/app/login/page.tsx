@@ -1,7 +1,6 @@
 "use client";
 import { FormEvent, useState } from "react";
 import cookie from "js-cookie";
-import { redirect } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -9,9 +8,8 @@ export default function Login() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(email, password);
 
-    fetch("http://localhost:3001/v1/auth/login", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL!}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

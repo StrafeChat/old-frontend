@@ -1,16 +1,14 @@
 "use client";
 import cookie from "js-cookie";
 import Client from "@/ws/Client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useClient } from "@/context/ClientContext";
 
 export default function App() {
-  const [client, setClient] = useState<Client | null>(null);
-  const [heartbeatTimer, setHeartbeatTimer] = useState<NodeJS.Timer | null>(
-    null
-  );
+  const { client, setClient, setHeartbeatTimer } = useClient();
 
   const startHeartbeat = (heartbeatInterval: number) => {
-    setHeartbeatTimer(
+    setHeartbeatTimer!(
       setInterval(() => {
         client?.sendHeartbeat();
       }, heartbeatInterval)
@@ -19,7 +17,7 @@ export default function App() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!client) setClient(new Client("ws://localhost:3001"));
+    if (!client) setClient!(new Client(process.env.NEXT_PUBLIC_WS_URI!));
 
     client?.addEventListener("open", () => {
       console.log("Connected to the websocket server!");

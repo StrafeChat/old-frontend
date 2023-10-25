@@ -31,6 +31,10 @@ input {
   @apply bg-[var(--input)] p-2 outline-none rounded-md;
 }
 
+select {
+  @apply bg-[var(--input)] p-2 outline-none rounded-md;
+}
+
 h1 {
   @apply text-3xl;
 }
