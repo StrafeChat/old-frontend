@@ -1,6 +1,6 @@
 # ⚠️ Warning:
 
-**_Strafe `Frontend` and all other projects related to this such as `Backend, CDN, etc.` are still under heavy development. We reccommend that you not try to use it for commerical use or personal use until development has progressed more and bugs are less likely to happen._**
+*_Strafe `Frontend` and all other projects related to this such as `Backend, CDN, etc.` are still under heavy development. We reccommend that you not try to use it for personal use until development has progressed more and bugs are less likely to happen._**
 
 # Strafe Frontend
 
