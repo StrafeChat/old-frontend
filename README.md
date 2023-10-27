@@ -1,6 +1,6 @@
 # ⚠️ Warning:
 
-*_Strafe `Frontend` and all other projects related to this such as `Backend, CDN, etc.` are still under heavy development. We reccommend that you not try to use it for personal use until development has progressed more and bugs are less likely to happen._**
+**_Strafe `Frontend` and all other projects related to this such as `Backend, CDN, etc.` are still under heavy development. We reccommend that you not try to use it for personal use until development has progressed more and bugs are less likely to happen._**
 
 # Strafe Frontend
 
@@ -8,11 +8,11 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/StrafeChat/frontend
+git clone https://github.com/StrafeChat/backend
 
 # Install all dependencies
 pnpm i
 
-# run the frontend
+# Run the frontend
 pnpm run dev
 ```
