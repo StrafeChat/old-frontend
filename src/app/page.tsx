@@ -1,54 +1,35 @@
 "use client";
-import cookie from "js-cookie";
-import Client from "@/ws/Client";
+import { Client } from "strafe.js";
 import { useEffect } from "react";
 import { useClient } from "@/context/ClientContext";
+import cookie from "js-cookie";
+import GuildList from "@/components/GuildList";
+import ChannelList from "@/components/ChannelList";
 
 export default function App() {
-  const { client, setClient, setHeartbeatTimer } = useClient();
-
-  const startHeartbeat = (heartbeatInterval: number) => {
-    setHeartbeatTimer!(
-      setInterval(() => {
-        client?.sendHeartbeat();
-      }, heartbeatInterval)
-    );
-  };
+  const { client, ready, setClient, setReady } = useClient();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!client) setClient!(new Client(process.env.NEXT_PUBLIC_WS_URI!));
+    if (!client) setClient!(new Client());
 
-    client?.addEventListener("open", () => {
-      console.log("Connected to the websocket server!");
-      client?.send(
-        JSON.stringify({
-          op: 2,
-          data: {
-            token: cookie.get("token"),
-          },
-        })
-      );
-    });
+    if (client) {
+      if (!client.options.token) client.login(cookie.get("token")!);
+      
+      client.once("ready", () => {
+        setReady!(true);
+      });
 
-    client?.addEventListener("message", (res: any) => {
-      const { op, data } = JSON.parse(res.data);
-      switch (op) {
-        case 9:
-          const { heartbeatInterval } = data;
-          startHeartbeat(heartbeatInterval);
-          break;
-      }
-    });
+    }
+  }, [client, setClient]);
 
-    client?.addEventListener("close", (event) => {
-      switch (event.code) {
-        case 4004:
-          window.location.href = "/login";
-          break;
-      }
-    });
-  });
+  if (!client) return <div></div>;
+  if (!ready) return <div></div>;
 
-  return <div></div>;
+  return (
+    <div className="w-full h-full flex">
+      <GuildList />
+      <ChannelList/>
+    </div>
+  );
 }

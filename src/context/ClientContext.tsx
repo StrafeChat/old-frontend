@@ -1,6 +1,6 @@
 "use client";
 
-import Client from "@/ws/Client";
+import { Client } from "strafe.js";
 import {
   Dispatch,
   SetStateAction,
@@ -11,21 +11,19 @@ import {
 
 interface IClientContext {
   client?: Client;
-  heartbeatTimer?: NodeJS.Timer;
+  ready?: boolean;
   setClient?: Dispatch<SetStateAction<Client | undefined>>;
-  setHeartbeatTimer?: Dispatch<SetStateAction<NodeJS.Timer | undefined>>;
+  setReady?: Dispatch<SetStateAction<boolean>>;
 }
 
 const ClientContext = createContext<IClientContext>({});
 
 export const ClientProvider = ({ children }: { children: JSX.Element }) => {
   const [client, setClient] = useState<Client>();
-  const [heartbeatTimer, setHeartbeatTimer] = useState<NodeJS.Timer>();
+  const [ready, setReady] = useState(false);
 
   return (
-    <ClientContext.Provider
-      value={{ client, heartbeatTimer, setClient, setHeartbeatTimer }}
-    >
+    <ClientContext.Provider value={{ client, ready, setClient, setReady }}>
       {children}
     </ClientContext.Provider>
   );

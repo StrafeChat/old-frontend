@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ClientProvider>
-          <div>{children}</div>
+          <div className="w-screen h-screen">{children}</div>
         </ClientProvider>
       </body>
     </html>
