@@ -3,7 +3,7 @@ import "./globals.css";
 import { ClientProvider } from "@/context/ClientContext";
 
 export const metadata: Metadata = {
-  title: "Strafe Chat",
+  title: "StrafeChat",
   description: "Start chatting today on strafe.chat!",
 };
 

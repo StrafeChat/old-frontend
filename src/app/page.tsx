@@ -3,6 +3,7 @@ import { Client } from "strafe.js";
 import { useEffect } from "react";
 import { useClient } from "@/context/ClientContext";
 import cookie from "js-cookie";
+import LoadingScreen from "@/components/LoadingScreen";
 import GuildList from "@/components/GuildList";
 import ChannelList from "@/components/ChannelList";
 
@@ -23,8 +24,7 @@ export default function App() {
     }
   }, [client, setClient]);
 
-  if (!client) return <div></div>;
-  if (!ready) return <div></div>;
+  if (!client || !ready) return <LoadingScreen />;
 
   return (
     <div className="w-full h-full flex">
