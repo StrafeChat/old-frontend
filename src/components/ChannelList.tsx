@@ -1,4 +1,7 @@
+import { useClient } from "@/context/ClientContext";
+
 export default function ChannelList() {
+  const { client } = useClient();
 
   return (
     <div className="channel-sidebar">

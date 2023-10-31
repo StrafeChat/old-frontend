@@ -55,10 +55,37 @@ button.submit {
   @apply bg-[var(--accent-primary)] p-2 rounded-md;
 }
 
-ul.guild-sidebar {
-  @apply bg-[var(--bg-guilds)] w-16 h-full p-2 flex flex-col items-center;
-}
+  ul.guild-sidebar-left {
+    @apply bg-[var(--bg-guilds)] w-16 h-full p-2 flex flex-col items-center;
+  }
+
+  ul.guild-sidebar-top {
+    @apply bg-[var(--bg-guilds)] w-full h-16 p-2;
+  }
 
 div.channel-sidebar {
   @apply bg-[var(--bg-channels)] w-52 h-full flex flex-col;
+}
+
+/* Loading Screen */
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loader {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #7289da; /* Discord blue color */
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
