@@ -60,11 +60,11 @@ button.submit {
   }
 
   ul.guild-sidebar-top {
-    @apply bg-[var(--bg-guilds)] w-full h-16 p-2;
+    @apply bg-[var(--bg-guilds)] w-full h-16 p-2 flex items-center;
   }
 
 div.channel-sidebar {
-  @apply bg-[var(--bg-channels)] w-52 h-full flex flex-col;
+  @apply bg-[var(--bg-channels)] w-52 h-full flex flex-col items-center;
 }
 
 /* Loading Screen */

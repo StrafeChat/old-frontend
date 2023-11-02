@@ -6,20 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function GuildList({ position }: { position: string }) {
   const { client } = useClient();
-  console.log(position)
 
   return (
     <ul className={`guild-sidebar-${position}`}>
-        <div style={{ paddingTop: "-10px"}} className="w-full h-14 rounded-r-sm">
-                    <img style={{border: "2px solid #2F3136"}}
-                      src={client?.user!.avatar!}
-                      draggable={false}
-                      className="w-12 h-12 rounded-lg select-none p-0.5"
-                    ></img>
-                    <hr className="w-[50px] mx-auto my-2 border-gray-200 border-opacity-30"></hr>
-                  </div>
-                <div className="w-full h-11 flex items-center justify-center ">
-                  </div>
-              </ul>
-            );
-          }
+      <img src={client?.user?.avatar ? client.user.avatar : ""} className="border border-[#2F3136] w-12 h-12 rounded-lg select-none p-0.5" alt="profile picture" />
+      <div className={`${position == "left" ? "w-[45px] h-0.5 my-1" : "w-0.5 h-[45px] mx-1"} bg-gray-200 opacity-30`}></div>
+    </ul>
+  );
+}

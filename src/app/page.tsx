@@ -1,6 +1,6 @@
 "use client";
 import { Client } from "strafe.js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useClient } from "@/context/ClientContext";
 import cookie from "js-cookie";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -9,6 +9,7 @@ import ChannelList from "@/components/ChannelList";
 
 export default function App() {
   const { client, ready, setClient, setReady } = useClient();
+  const [position, setPosition] = useState("left");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -22,14 +23,14 @@ export default function App() {
       });
 
     }
-  }, [client, setClient]);
+  }, [client, setClient, setReady]);
 
   if (!client || !ready) return <LoadingScreen />;
 
   return (
-    <div className="w-full h-full flex">
-      <GuildList position="left"/>
-      {/*<ChannelList/>*/}
+    <div className={`w-full h-full flex ${position == "top" && "flex-col"}`}>
+      <GuildList position={position}/>
+      <ChannelList/>
     </div>
   );
 }
