@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: rgb(25,25,25);
-  --bg-secondary: rgb(32,32,32);
-  --bg-guilds: rgb(10,10,10);
-  --bg-channels: rgb(20,20,20);
-  --bg-user-panel: rgb(12,12,12);
-  --bg-seperator: rgb(64,64,64);
+  --bg-primary: rgb(25, 25, 25);
+  --bg-secondary: rgb(32, 32, 32);
+  --bg-guilds: rgb(10, 10, 10);
+  --bg-channels: rgb(20, 20, 20);
+  --bg-user-panel: rgb(12, 12, 12);
+  --bg-seperator: rgb(64, 64, 64);
   --input: rgb(42, 42, 42);
-  --text-secondary: rgb(107,114,128);
-  --accent-primary: rgb(255, 90 ,90);
+  --text-secondary: rgb(107, 114, 128);
+  --accent-primary: rgb(255, 90, 90);
   color: white;
 }
 
@@ -55,13 +55,13 @@ button.submit {
   @apply bg-[var(--accent-primary)] p-2 rounded-md;
 }
 
-  ul.guild-sidebar-left {
-    @apply bg-[var(--bg-guilds)] w-16 h-full p-2 flex flex-col items-center;
-  }
+ul.guild-sidebar-horizontal {
+  @apply bg-[var(--bg-guilds)] w-16 min-h-full p-2 flex flex-col items-center;
+}
 
-  ul.guild-sidebar-top {
-    @apply bg-[var(--bg-guilds)] w-full h-16 p-2 flex items-center;
-  }
+ul.guild-sidebar-vertical {
+  @apply bg-[var(--bg-guilds)] min-w-full h-16 p-2 flex items-center;
+}
 
 div.channel-sidebar {
   @apply bg-[var(--bg-channels)] w-52 h-full flex flex-col items-center;
@@ -79,13 +79,19 @@ div.channel-sidebar {
 .loader {
   border: 4px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  border-top: 4px solid #7289da; /* Discord blue color */
+  border-top: 4px solid #7289da;
+  /* Discord blue color */
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
