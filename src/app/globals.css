@@ -67,6 +67,10 @@ div.channel-sidebar {
   @apply bg-[var(--bg-channels)] w-52 h-full flex flex-col items-center;
 }
 
+div.main-wrapper {
+  @apply w-[calc(100%-13rem)]
+}
+
 /* Loading Screen */
 
 .loadingContainer {
