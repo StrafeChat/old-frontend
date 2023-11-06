@@ -8,6 +8,7 @@
   --bg-guilds: rgb(10, 10, 10);
   --bg-channels: rgb(20, 20, 20);
   --bg-user-panel: rgb(12, 12, 12);
+  --bg-ui: rgb(24,24,24);
   --bg-seperator: rgb(64, 64, 64);
   --input: rgb(42, 42, 42);
   --text-secondary: rgb(107, 114, 128);
@@ -69,6 +70,14 @@ div.channel-sidebar {
 
 div.main-wrapper {
   @apply w-[calc(100%-13rem)]
+}
+
+div[role="menu"] {
+  @apply bg-[var(--bg-ui)] border-none rounded-lg;
+}
+
+div[role="menuitem"] {
+  @apply hover:bg-stone-700 cursor-pointer rounded-md;
 }
 
 /* Loading Screen */

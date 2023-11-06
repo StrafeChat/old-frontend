@@ -7,6 +7,7 @@ export default function Layout({ children }: { children: JSX.Element | never[] }
     const { client, ready, serverListPos } = useClient();
 
     if (!client || !ready) return <LoadingScreen />;
+
     return (
         <div className={`w-full h-full flex ${(serverListPos == "top" || serverListPos == "bottom") && "flex-col"}`}>
             {((serverListPos == "left" || serverListPos == "top") && <GuildList orientation={serverListPos == "left" ? "horizontal" : "vertical"} />)}

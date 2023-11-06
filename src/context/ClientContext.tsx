@@ -9,6 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { usePathname } from 'next/navigation'
 import cookie from "js-cookie";
 
 interface IClientContext {
@@ -23,22 +24,23 @@ interface IClientContext {
 const ClientContext = createContext<IClientContext>({});
 
 export const ClientProvider = ({ children }: { children: JSX.Element }) => {
+  const pathname = usePathname();
   const [client, setClient] = useState<Client>();
   const [ready, setReady] = useState(false);
   const [serverListPos, setServerListPos] = useState("");
 
   useEffect(() => {
-    if (!client) setClient!(new Client());
-
-    if (client) {
-      if (!client.options.token) client.login(cookie.get("token")!);
-
-      client.once("ready", () => {
-        if (client.user) setServerListPos(client.user.preferences!.serverListPos);
-        setReady!(true);
-      });
-    }
-  }, [client, setClient, setReady]);
+    if (pathname.startsWith("/signup") || pathname.startsWith("/login")) return;
+    document.addEventListener("contextmenu", (event) => event.preventDefault());
+    if (!client) {
+      const newClient = new Client();
+      setClient(newClient);
+      newClient.once("ready", () => {
+        if (newClient.user) setServerListPos(newClient.user.preferences!.serverListPos);
+        setReady(true);
+      })
+    } else if (!client.options.token) client.login(cookie.get("token")!)
+  }, [client, pathname]);
 
   return (
     <ClientContext.Provider value={{ client, serverListPos, ready, setClient, setReady, setServerListPos }}>
