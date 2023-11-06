@@ -5,12 +5,15 @@ import {
   Dispatch,
   SetStateAction,
   createContext,
+  use,
   useContext,
   useEffect,
   useState,
 } from "react";
 import { usePathname } from 'next/navigation'
 import cookie from "js-cookie";
+import { error } from "console";
+import LoadingScreen from "@/components/LoadingScreen";
 
 interface IClientContext {
   client?: Client;
@@ -27,6 +30,7 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
   const pathname = usePathname();
   const [client, setClient] = useState<Client>();
   const [ready, setReady] = useState(false);
+  const [clientError, setClientError] = useState(false);
   const [serverListPos, setServerListPos] = useState("");
 
   useEffect(() => {
@@ -35,13 +39,23 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
     if (!client) {
       const newClient = new Client();
       setClient(newClient);
-      newClient.once("ready", () => {
+      newClient.on("ready", () => {
         if (newClient.user) setServerListPos(newClient.user.preferences!.serverListPos);
         setReady(true);
+        setClientError(false);
       })
     } else if (!client.options.token) client.login(cookie.get("token")!)
   }, [client, pathname]);
 
+  useEffect(() => {
+    if (pathname.startsWith("/signup") || pathname.startsWith("/login")) return;
+    client?.on("error", () => {
+       setClientError(true);
+    })
+  }, [client])
+
+  if (clientError) return <LoadingScreen />
+   
   return (
     <ClientContext.Provider value={{ client, serverListPos, ready, setClient, setReady, setServerListPos }}>
       {children}
