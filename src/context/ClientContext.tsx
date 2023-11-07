@@ -5,14 +5,12 @@ import {
   Dispatch,
   SetStateAction,
   createContext,
-  use,
   useContext,
   useEffect,
   useState,
 } from "react";
 import { usePathname } from 'next/navigation'
 import cookie from "js-cookie";
-import { error } from "console";
 import LoadingScreen from "@/components/LoadingScreen";
 
 interface IClientContext {

@@ -48,7 +48,7 @@ export default function SignUp() {
             <label className="title">Email</label>
             <input
               type="text"
-              placeholder="username@strafe.com"
+              placeholder="username@strafe.chat"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
