@@ -108,3 +108,31 @@ div[role="menuitem"] {
     transform: rotate(360deg);
   }
 }
+
+div.status-online {
+  background-color: lightgreen;
+}
+
+div.status-offline {
+  background-color: gray;
+}
+
+div.status-idle {
+  background-color: darkorange;
+}
+
+div.status-streaming {
+  background-color: magenta;
+}
+
+div.status-dnd {
+  background-color: lightcoral;
+}
+
+div.status-coding {
+  background-color: lightblue;
+}
+
+div.status-sleeping {
+  background-color: brown;
+}
