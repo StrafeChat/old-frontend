@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: rgb(25, 25, 25);
+  --bg-primary: #262626;
   --bg-secondary: rgb(32, 32, 32);
-  --bg-guilds: rgb(10, 10, 10);
-  --bg-channels: rgb(20, 20, 20);
+  --bg-guilds: #171717;
+  --bg-channels: #1c1c1c;
   --bg-user-panel: rgb(12, 12, 12);
   --bg-ui: rgb(24,24,24);
   --bg-seperator: rgb(64, 64, 64);
@@ -110,29 +110,41 @@ div[role="menuitem"] {
 }
 
 div.status-online {
-  background-color: lightgreen;
+  background-color: #22c55e;
 }
 
 div.status-offline {
-  background-color: gray;
+  background-color: #6b7280;
 }
 
 div.status-idle {
-  background-color: darkorange;
-}
-
-div.status-streaming {
-  background-color: magenta;
+  background-color: #eab308;
 }
 
 div.status-dnd {
-  background-color: lightcoral;
+  background-color: #ef4444;
 }
 
 div.status-coding {
-  background-color: lightblue;
+  background-color: #3b82f6;
+}
+
+div.status-streaming {
+  background-color: #a855f7;
 }
 
 div.status-sleeping {
-  background-color: brown;
+  background-color: #f97316;
+}
+button[role="switch"]:has(> span[data-state="checked"]) {
+  @apply bg-green-500;
+}
+
+button[role="switch"]:has(> span[data-state="unchecked"]) {
+  @apply bg-gray-500;
+}
+
+
+button[role="switch"] span {
+  @apply bg-white;
 }

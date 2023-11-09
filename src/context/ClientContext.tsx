@@ -62,9 +62,36 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
     })
 
     client?.on("presenceUpdate", (data) => {
-      setStatus(data);
+      console.log(data);
+      if (data.user.id == client.user!.id) return setStatus(data.status.name);
+
+      setFriends((prevFriends: any[]) => {
+        return prevFriends.map((friend) => {
+          if (friend.receiverId == data.user.id) return {
+            ...friend,
+            receiver: {
+              ...friend.receiver,
+              status: {
+                ...friend.receiver.status,
+                name: data.status.name,
+              },
+            }
+          }
+          else if (friend.senderId == data.user.id) return {
+            ...friend,
+            sender: {
+              ...friend.sender,
+              status: {
+                ...friend.sender.status,
+                name: data.status.name,
+              },
+            }
+          }
+          return friend;
+        })
+      })
     })
-  }, [client])
+  }, [client, friends, pathname])
 
   if (clientError) return <LoadingScreen />
 

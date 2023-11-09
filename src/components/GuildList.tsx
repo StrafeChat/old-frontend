@@ -42,7 +42,7 @@ export default function GuildList({ orientation }: { orientation: string }) {
           <img src={client?.user?.avatar ? client.user.avatar : ""} className="border border-[#2F3136] w-10 h-10 select-none p-0.5 rounded-full" alt="profile picture" />
           <div className={`w-3 h-3 status-${status} absolute bottom-0 right-0 rounded-full`}></div>
         </ContextMenuTrigger>
-        <ContextMenuContent className="bg-black">
+        <ContextMenuContent>
           <ContextMenuItem onClick={() => setShowSettings(true)}>Settings</ContextMenuItem>
           <hr />
           <ContextMenuItem className="flex gap-2" onClick={() => client?.user?.setStatus("online")}><div className="w-2 h-2 bg-green-500 rounded-full" />Online</ContextMenuItem>
