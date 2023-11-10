@@ -1,3 +1,4 @@
+"use client";
 import { useClient } from "@/context/ClientContext";
 import LoadingScreen from "./LoadingScreen";
 import GuildList from "./GuildList";

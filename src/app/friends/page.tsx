@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { useClient } from "@/context/ClientContext";
 import { Check, MessageSquare, MoreVertical, PlusCircleIcon, X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Client, Friend, User } from "strafe.js";
 
 export default function Friends() {
@@ -46,7 +46,11 @@ export default function Friends() {
 
 function FriendsOnline({ client, friends }: { client: Client, friends: Friend[] }) {
 
-    console.log(friends[0]?.sender?.status)
+    useEffect(() => {
+        client.user?.getDMS().then((dms) => {
+            console.log(dms)
+        });
+    }, [])
 
     return (
         <ul className="w-full h-full">
@@ -66,7 +70,11 @@ function FriendsOnline({ client, friends }: { client: Client, friends: Friend[] 
                                 </div>
                             </div>
                             <div className="flex gap-2">
-                                <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-blue-500"><MessageSquare /></button>
+                                <button onClick={() => {
+                                    friend.receiver?.createDM().then((data: any) => {
+                                        if (data && data.id) location.href = `/channels/${data.id}`;
+                                    })
+                                }} className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-blue-500"><MessageSquare /></button>
                                 <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-green-500"><MoreVertical /></button>
                             </div>
                         </li>
@@ -83,7 +91,11 @@ function FriendsOnline({ client, friends }: { client: Client, friends: Friend[] 
                                 </div>
                             </div>
                             <div className="flex gap-2">
-                                <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-blue-500"><MessageSquare /></button>
+                                <button onClick={() => {
+                                    friend.sender?.createDM().then((data: any) => {
+                                        if (data && data.id) location.href = `/channels/${data.id}`;
+                                    })
+                                }} className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-blue-500"><MessageSquare /></button>
                                 <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-green-500"><MoreVertical /></button>
                             </div>
                         </li>)}

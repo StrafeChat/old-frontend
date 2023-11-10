@@ -14,7 +14,7 @@ export default function App() {
                  </div>
                </div>
                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <h1><b>Welcome {client?.user?.displayName! || client?.user?.username!}!</b></h1>
+                    {/*<h1><b>Welcome {client?.user?.displayName! || client?.user?.username!}!</b></h1>*/}
                 </div>
      </div>                 
     </Layout>
