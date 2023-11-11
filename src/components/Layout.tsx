@@ -2,7 +2,7 @@
 import { useClient } from "@/context/ClientContext";
 import LoadingScreen from "./LoadingScreen";
 import GuildList from "./GuildList";
-import ChannelList from "./ChannelList";
+import RoomList from "./RoomList";
 
 export default function Layout({ children }: { children: JSX.Element | never[] }) {
     const { client, ready, serverListPos } = useClient();
@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: JSX.Element | never[] }
         <div className={`w-full h-full flex ${(serverListPos == "top" || serverListPos == "bottom") && "flex-col"}`}>
             {((serverListPos == "left" || serverListPos == "top") && <GuildList orientation={serverListPos == "left" ? "horizontal" : "vertical"} />)}
             <div className="w-full h-full flex">
-                <ChannelList />
+                <RoomList />
                 <div className="main-wrapper">
                     {children}
                 </div>

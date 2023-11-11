@@ -1,39 +1,59 @@
 "use client";
 import { FormEvent, useState } from "react";
 import cookie from "js-cookie";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+interface LoginForm {
+  username: string;
+  password: string;
+}
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
+  const form = useForm<LoginForm>({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL!}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    }).then(async (res) => {
-      const data = await res.json();
-      console.log(data);
-      if (data.code == 200) {
-        cookie.set("token", data.data);
-        window.location.href = "/";
-      }
-    });
+  const handleSubmit = async (values: LoginForm) => {
+    // event.preventDefault();
+
+    // fetch(`${process.env.NEXT_PUBLIC_API_URL!}/auth/login`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     email,
+    //     password,
+    //   }),
+    // }).then(async (res) => {
+    //   const data = await res.json();
+    //   console.log(data);
+    //   if (data.code == 200) {
+    //     cookie.set("token", data.data);
+    //     window.location.href = "/";
+    //   }
+    // });
   };
 
   return (
     <div className="form-wrapper">
-      <form onSubmit={(event) => handleSubmit(event)}>
+      <Form>
+        <div></div>
+      </Form>
+      {/* <form onSubmit={(event) => handleSubmit(event)}>
         <h1 className="title">Login</h1>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col">
-            <label className="title">Email</label>
-            <input
+            <Label className="title py-1">Email</Label>
+            <Input
               type="text"
               placeholder="username@strafe.com"
               value={email}
@@ -41,7 +61,7 @@ export default function Login() {
             />
           </div>
           <div className="flex flex-col">
-            <label className="title">Password</label>
+            <Label className="title py-1">Password</Label>
             <input
               type="password"
               placeholder="********"
@@ -51,7 +71,7 @@ export default function Login() {
           </div>
           <button className="submit">Login</button>
         </div>
-      </form>
+      </form> */}
     </div>
   );
 }

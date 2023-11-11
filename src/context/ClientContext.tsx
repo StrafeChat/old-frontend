@@ -12,14 +12,17 @@ import {
 import { usePathname } from 'next/navigation'
 import cookie from "js-cookie";
 import LoadingScreen from "@/components/LoadingScreen";
+import { DmChannel } from "strafe.js/dist/structures/Channel";
 
 interface IClientContext {
   client?: Client;
+  pms?: DmChannel[],
   friends?: Friend[],
   ready?: boolean;
   serverListPos?: string;
   status?: string;
   setClient?: Dispatch<SetStateAction<Client | undefined>>;
+  setPms?: Dispatch<SetStateAction<DmChannel[]>>;
   setFriends?: Dispatch<SetStateAction<Friend[]>>;
   setReady?: Dispatch<SetStateAction<boolean>>;
   setServerListPos?: Dispatch<SetStateAction<string>>;
@@ -31,7 +34,8 @@ const ClientContext = createContext<IClientContext>({});
 export const ClientProvider = ({ children }: { children: JSX.Element }) => {
   const pathname = usePathname();
   const [client, setClient] = useState<Client>();
-  const [friends, setFriends] = useState<Friend[]>([])
+  const [pms, setPms] = useState<any[]>([]);
+  const [friends, setFriends] = useState<Friend[]>([]);
   const [ready, setReady] = useState(false);
   const [clientError, setClientError] = useState(false);
   const [serverListPos, setServerListPos] = useState("");
@@ -50,6 +54,9 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
         newClient.getFriends().then((friends) => {
           if (friends != null) setFriends(friends);
         });
+        newClient.user?.getDMS().then((pms) => {
+          setPms(pms);
+        })
         setClientError(false);
       });
     } else if (!client.options.token) client.login(cookie.get("token")!)
@@ -96,7 +103,7 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
   if (clientError) return <LoadingScreen />
 
   return (
-    <ClientContext.Provider value={{ client, friends, serverListPos, status, ready, setClient, setFriends, setReady, setServerListPos, setStatus }}>
+    <ClientContext.Provider value={{ client, pms, friends, serverListPos, status, ready, setClient, setPms, setFriends, setReady, setServerListPos, setStatus }}>
       {children}
     </ClientContext.Provider>
   );

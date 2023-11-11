@@ -6,7 +6,7 @@
   --bg-primary: #262626;
   --bg-secondary: rgb(32, 32, 32);
   --bg-guilds: #171717;
-  --bg-channels: #1c1c1c;
+  --bg-rooms: #1c1c1c;
   --bg-user-panel: rgb(12, 12, 12);
   --bg-ui: rgb(24,24,24);
   --bg-seperator: rgb(64, 64, 64);
@@ -64,8 +64,8 @@ ul.guild-sidebar-vertical {
   @apply bg-[var(--bg-guilds)] min-w-full h-16 p-2 flex items-center;
 }
 
-div.channel-sidebar {
-  @apply bg-[var(--bg-channels)] w-52 h-full flex flex-col items-center;
+div.room-sidebar {
+  @apply bg-[var(--bg-rooms)] w-52 h-full flex flex-col items-center;
 }
 
 div.main-wrapper {

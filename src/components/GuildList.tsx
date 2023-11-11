@@ -40,7 +40,7 @@ export default function GuildList({ orientation }: { orientation: string }) {
       <ContextMenu>
         <ContextMenuTrigger className="relative rounded-full hover:bg-stone-800">
           <img src={client?.user?.avatar ? client.user.avatar : ""} className="border border-[#2F3136] w-10 h-10 select-none p-0.5 rounded-full" alt="profile picture" />
-          <div className={`w-3 h-3 status-${status} absolute bottom-0 right-0 rounded-full`}></div>
+          <div className={`w-3 h-3 status-${status} absolute bottom-0 right-0 border border-[#2F3136] rounded-full`}></div>
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem onClick={() => setShowSettings(true)}>Settings</ContextMenuItem>

@@ -2,11 +2,11 @@ import { useClient } from "@/context/ClientContext";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
 
-export default function ChannelList({ currentSetting, setCurrentSetting }: { currentSetting: string, setCurrentSetting: Dispatch<SetStateAction<string>> }) {
+export default function Settings({ currentSetting, setCurrentSetting }: { currentSetting: string, setCurrentSetting: Dispatch<SetStateAction<string>> }) {
   const { client } = useClient();
     
   return ( 
-    <div className="channel-sidebar">
+    <div className="room-sidebar">
       <div className="w-full flex flex-col items-start" >
         <p className="font-bold" style={{ fontSize: '10px', paddingTop: '25%', paddingLeft: '26%', color: '#E4E0E0' }}>User Settings</p>
         <div className="w-full px-4 h-full flex flex-col">

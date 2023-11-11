@@ -62,17 +62,17 @@ function FriendsOnline({ client, friends }: { client: Client, friends: Friend[] 
                             <div className="flex gap-2">
                                 <div className="relative">
                                     <Image src={friend.receiver?.avatar!} width={40} height={40} alt={friend.receiver?.username!} className="rounded-full" />
-                                    <div className={`absolute right-0 bottom-0 w-4 h-4 status-${friend.receiver?.status.online ? friend.receiver?.status.name : "offline"} rounded-full`} />
+                                    <div className={`absolute right-0 border border-[#262626] bottom-0 w-4 h-4 status-${friend.receiver?.status.online ? friend.receiver?.status.name : "offline"} rounded-full`} />
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="text-sm font-bold">{friend.receiver?.username}<span className="invisible group-hover:visible">#{friend.receiver?.tag}</span></span>
-                                    <span className="text-sm text-gray-400 font-semibold">{friend.receiver?.status.online ? friend.receiver?.status.name : "offline"}</span>
+                                    <span className="text-sm text-gray-400 font-semibold">{friend.receiver?.status.online ? friend.receiver?.status?.name.charAt(0).toUpperCase() + friend.receiver?.status?.name.slice(1) : "Offline"}</span>
                                 </div>
                             </div>
                             <div className="flex gap-2">
                                 <button onClick={() => {
                                     friend.receiver?.createDM().then((data: any) => {
-                                        if (data && data.id) location.href = `/channels/${data.id}`;
+                                        if (data && data.id) location.href = `/rooms/${data.id}`;
                                     })
                                 }} className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-blue-500"><MessageSquare /></button>
                                 <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-green-500"><MoreVertical /></button>
@@ -83,7 +83,7 @@ function FriendsOnline({ client, friends }: { client: Client, friends: Friend[] 
                             <div className="flex gap-2">
                                 <div className="relative">
                                     <Image src={friend.sender?.avatar!} width={40} height={40} alt={friend.sender?.username!} className="rounded-full" />
-                                    <div className={`absolute right-0 bottom-0 w-4 h-4 status-${friend.sender?.status.name} rounded-full`} />
+                                    <div className={`absolute right-0 border border-[#262626] bottom-0 w-4 h-4 status-${friend.sender?.status.name} rounded-full`} />
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="text-sm font-bold">{friend.sender?.username}<span className="invisible group-hover:visible">#{friend.sender?.tag}</span></span>
@@ -93,7 +93,7 @@ function FriendsOnline({ client, friends }: { client: Client, friends: Friend[] 
                             <div className="flex gap-2">
                                 <button onClick={() => {
                                     friend.sender?.createDM().then((data: any) => {
-                                        if (data && data.id) location.href = `/channels/${data.id}`;
+                                        if (data && data.id) location.href = `/rooms/${data.id}`;
                                     })
                                 }} className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-blue-500"><MessageSquare /></button>
                                 <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-green-500"><MoreVertical /></button>
@@ -117,11 +117,11 @@ function FriendsAll({ client, friends }: { client: Client, friends: Friend[] }) 
                             <div className="flex gap-2">
                                 <div className="relative">
                                     <Image src={friend.receiver?.avatar!} width={40} height={40} alt={friend.receiver?.username!} className="rounded-full" />
-                                    <div className={`absolute right-0 bottom-0 w-4 h-4 status-${friend.receiver?.status.name} rounded-full`}></div>
+                                    <div className={`absolute right-0 border border-[#262626] bottom-0 w-4 h-4 status-${friend.receiver?.status.name} rounded-full`}></div>
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="text-sm font-bold">{friend.receiver?.username}<span className="invisible group-hover:visible">#{friend.receiver?.tag}</span></span>
-                                    <span className="text-sm text-gray-400 font-semibold"></span>
+                                    <span className="text-sm text-gray-400 font-semibold">{friend.receiver?.status.online ? friend.receiver?.status?.name.charAt(0).toUpperCase() + friend.receiver?.status?.name.slice(1) : "Offline"}</span>
                                 </div>
                             </div>
                         </li>
