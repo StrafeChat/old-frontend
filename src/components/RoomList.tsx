@@ -2,7 +2,7 @@ import { useClient } from "@/context/ClientContext";
 import Image from "next/image";
 import Link from "next/link";
 import { User } from "strafe.js";
-import { DmRoom } from "strafe.js/dist/structures/Room";
+import { PmRoom } from "strafe.js/dist/structures/Room";
 
 export default function RoomList() {
   const { client, pms } = useClient();
@@ -13,9 +13,14 @@ export default function RoomList() {
         <div className="w-full px-4 h-full flex flex-col">
           {/* We need to figure out what to do here next lol */}
           <b>
-            <h1 className="p-1 fon text-lg w-full text-left mt-2.5">
-              StrafeChat
-            </h1>
+            <div className="flex items-center justify-between">
+              <h1 className="p-1 fon text-lg text-left mt-2.5">
+                StrafeChat&nbsp;
+                <span className="px-0.5 py-0.5 w-[1px] h-[0.5px] text-white bg-[#737d3c] text-sm rounded">
+                  <b>BETA</b>
+                </span>
+              </h1>
+            </div>
           </b>
           <hr className="opacity-10 w-" />
           <Link
@@ -56,7 +61,7 @@ export default function RoomList() {
   );
 }
 
-function PrivateMessage({ pm, user }: { pm?: DmRoom; user?: User }) {
+function PrivateMessage({ pm, user }: { pm?: PmRoom; user?: User }) {
   if (!user || !pm) return <div></div>;
 
   return (
@@ -78,7 +83,9 @@ function PrivateMessage({ pm, user }: { pm?: DmRoom; user?: User }) {
       </div>
       <div className="flex flex-col">
         <span className="text-[14px] font-bold">{user.username}</span>
-        <span className="text-[11px]">{user.status.name.charAt(0).toUpperCase() + user.status.name.slice(1)}</span>
+        <span className="text-[11px]">
+          {user.status.name.charAt(0).toUpperCase() + user.status.name.slice(1)}
+        </span>
       </div>
     </Link>
   );

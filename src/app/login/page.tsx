@@ -3,75 +3,87 @@ import { FormEvent, useState } from "react";
 import cookie from "js-cookie";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import RepeatedBackground from "@/components/RepeatedBackground";
 
 interface LoginForm {
-  username: string;
+  email: string;
   password: string;
 }
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const form = useForm<LoginForm>({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
 
   const handleSubmit = async (values: LoginForm) => {
-    // event.preventDefault();
-
-    // fetch(`${process.env.NEXT_PUBLIC_API_URL!}/auth/login`, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     email,
-    //     password,
-    //   }),
-    // }).then(async (res) => {
-    //   const data = await res.json();
-    //   console.log(data);
-    //   if (data.code == 200) {
-    //     cookie.set("token", data.data);
-    //     window.location.href = "/";
-    //   }
-    // });
+    fetch(`${process.env.NEXT_PUBLIC_API_URL!}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: values.email,
+        password: values.password,
+      }),
+    }).then(async (res) => {
+      const data = await res.json();
+      console.log(data);
+      if (data.code == 200) {
+        cookie.set("token", data.data);
+        window.location.href = "/";
+      }
+    });
   };
 
   return (
     <div className="form-wrapper">
-      <Form>
-        <div></div>
+      <RepeatedBackground />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 rounded-md">
+        <h2 className="text-3xl font-bold text-center">Login</h2>
+          <FormField
+            control={form.control}
+            name={"email"}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>EMAIL</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your email." {...field} />
+                </FormControl>
+                {/* <FormDescription>This is your username</FormDescription> */}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name={"password"}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>PASSWORD</FormLabel>
+                <FormControl>
+                  <Input type={"password"} placeholder="Enter your password." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button className="bg-[#737d3c] w-full" type="submit"><b>Submit</b></Button>
+          <p>Don&apos;t have an account? <a href="/signup" className="text-[#737d3c]">Sign Up</a></p>
+        </form>
       </Form>
-      {/* <form onSubmit={(event) => handleSubmit(event)}>
-        <h1 className="title">Login</h1>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col">
-            <Label className="title py-1">Email</Label>
-            <Input
-              type="text"
-              placeholder="username@strafe.com"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </div>
-          <div className="flex flex-col">
-            <Label className="title py-1">Password</Label>
-            <input
-              type="password"
-              placeholder="********"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </div>
-          <button className="submit">Login</button>
-        </div>
-      </form> */}
     </div>
   );
 }

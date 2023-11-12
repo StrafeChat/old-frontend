@@ -13,6 +13,14 @@ export default function SignUp() {
     setTimeout(() => {
       setTag("0001");
     }, 500);
+
+    // window.addEventListener("focus", () => {
+    //   document.title = "STUPID!";
+    // });
+
+    // window.addEventListener("blur", () => {
+    //   document.title = "STUPID!";
+    // });
   }, []);
 
   const handleSubmit = async (event: FormEvent) => {
