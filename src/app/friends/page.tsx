@@ -10,12 +10,16 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useClient } from "@/context/ClientContext";
 import {
-  Check,
-  MessageSquare,
   MoreVertical,
-  PlusCircleIcon,
-  X,
 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faUserPlus, 
+  faCheck, 
+  faX,
+  faMessage,
+  faEllipsisVertical
+ } from '@fortawesome/free-solid-svg-icons'
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -105,9 +109,9 @@ export default function Friends() {
           </div>
           <button
             onClick={() => setAddFriend(true)}
-            className="text-blue-500 hover:text-blue-600"
+            className="text-500 hover:text-blue-600"
           >
-            <PlusCircleIcon />
+            <FontAwesomeIcon icon={faUserPlus}/>
           </button>
           {addFriend && <AddFriendModal set={setAddFriend} show={addFriend} />}
         </div>
@@ -210,10 +214,10 @@ function FriendCard({ user }: { user: User | null }) {
           }}
           className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-blue-500"
         >
-          <MessageSquare />
+          <FontAwesomeIcon icon={faMessage} />
         </button>
         <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-green-500">
-          <MoreVertical />
+        <FontAwesomeIcon icon={faEllipsisVertical} />
         </button>
       </div>
     </li>
@@ -343,7 +347,7 @@ function FriendsPending({
                         </div>
                       </div>
                       <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-red-500">
-                        <X />
+                      <FontAwesomeIcon icon={faX}/>
                       </button>
                     </li>
                   </ContextMenuTrigger>
@@ -382,13 +386,13 @@ function FriendsPending({
                       </div>
                       <div className="flex gap-2">
                         <button
-                          className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-green-500"
+                          className="p-3 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-green-500"
                           onClick={() => friend.update("accept")}
                         >
-                          <Check />
+                          <FontAwesomeIcon icon={faCheck}/>
                         </button>
-                        <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-red-500">
-                          <X />
+                        <button className="p-3 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-red-500">
+                        <FontAwesomeIcon icon={faX}/>
                         </button>
                       </div>
                     </li>

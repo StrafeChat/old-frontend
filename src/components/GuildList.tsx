@@ -5,35 +5,14 @@ import { useState, useEffect } from "react";
 import UserSettingsModal from "./modals/UserSettingsModal";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "./ui/context-menu";
 import { BedDouble, Code2, PencilIcon, PlayCircle } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faCompass } from '@fortawesome/free-solid-svg-icons'
+import Link from "next/link";
 
 export default function GuildList({ orientation }: { orientation: string }) {
   const { client, status } = useClient();
-  // Maybe, I have to move some stuff wait why remove the statusColor
   const [showSettings, setShowSettings] = useState(false);
   const [statusColor, setStatusColor] = useState("");
-
-  // useEffect(() => { //oh uh what do we do for sleeps and coding 
-  //    switch (status) { 
-  //      case "online":
-  //        setStatusColor!("green");
-  //        break;
-  //      case "offline":
-  //        setStatusColor!("gray");
-  //        break;
-  //      case "idle":
-  //        setStatusColor!("yellow");
-  //        break;
-  //      case "dnd":
-  //        setStatusColor!("red");
-  //        break;
-  //       case "streaming":
-  //        setStatusColor!("purple");
-  //        break;
-  //     default:
-  //        setStatusColor!("gray");
-  //        break;
-  //    }
-  // }, [client, status]);
 
   return (
     <ul className={`guild-sidebar-${orientation}`}>
@@ -57,6 +36,19 @@ export default function GuildList({ orientation }: { orientation: string }) {
       </ContextMenu>
       <div className={`${orientation == "horizontal" ? "w-[35px] h-0.5 my-1.5" : "w-0.5 h-[35px] mx-1"} bg-gray-200 opacity-30`}></div>
       {showSettings && <UserSettingsModal show={showSettings} set={setShowSettings} />}
+
+    {/** Spaces */}
+
+      <Link href="/"> {/* Make this trigger a modal to create a space*/}
+      <div className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center my-[3px]" title="Add Space">
+      <FontAwesomeIcon icon={faPlus} className="w-7 h-7 text-[#737d3c]" />
+      </div>
+      </Link>
+      <Link href="/discover"> {/* Make this trigger a modal to create a space*/}
+      <div className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center my-[3px]" title="View Discover">
+      <FontAwesomeIcon icon={faCompass} className="w-7 h-7 text-[#737d3c]" />
+      </div>
+      </Link>
     </ul>
   );
 }

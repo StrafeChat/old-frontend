@@ -1,14 +1,28 @@
 "use client";
 import Layout from "@/components/Layout";
 import { useClient } from "@/context/ClientContext";
-import { useEffect, useRef, useState } from "react";
-import { ImagePlus, Smile, ScanSearch } from "lucide-react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import {
+  ImagePlus,
+  Smile,
+  ScanSearch,
+  ArrowDownNarrowWide,
+  ArrowBigDown,
+} from "lucide-react";
 import Image from "next/image";
 import { PmRoom } from "strafe.js/dist/structures/Room";
 import TimeAgo from "react-timeago";
+import Markdown from "react-markdown";
+import Message from "@/components/Message";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 export default function Room({ params }: { params: { id: string } }) {
-  const { client, pms, playPing } = useClient();
+  const { client, pms, copyText } = useClient();
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const scrollContainerRef = useRef<HTMLUListElement>(null);
@@ -16,12 +30,56 @@ export default function Room({ params }: { params: { id: string } }) {
   const [emoji, setShowEmoji] = useState(false);
   const [typing, setTyping] = useState<string[]>([]);
   const [showScrollButton, setShowScrollButton] = useState(false);
-
+  const [images, setImage] = useState<any[]>([]);
   const [room, setRoom] = useState<PmRoom | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [shouldScrollDown, setShouldScrollDown] = useState(true);
+
+  // useEffect(() => {
+  //   const handleScroll = (event: Event) => {
+  //     if (scrollContainerRef.current!.scrollTop < 1) {
+  //       setCurrentPage((page) => page++);
+  //       room?.fetchMessages(currentPage).then((msgs) => {
+  //         setMessages([...msgs.data, ...messages]);
+  //       });
+  //     }
+  //     setShowScrollButton(
+  //       scrollContainerRef.current!.scrollHeight / 1.5 >
+  //         scrollContainerRef.current!.scrollTop &&
+  //         scrollContainerRef.current!.scrollHeight > 3000
+  //     );
+  //   };
+
+  //   if (scrollContainerRef.current) {
+  //     scrollContainerRef.current.addEventListener("scroll", (event) =>
+  //       handleScroll(event)
+  //     );
+  //   }
+
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [scrollContainerRef.current]);
 
   useEffect(() => {
-    const handleScroll = (event: Event) => {
-      console.log(scrollContainerRef.current!.scrollHeight);
+    const handleScroll = () => {
+      if (scrollContainerRef.current!.scrollTop < 1) {
+        setCurrentPage((page) => page + 1);
+        room?.fetchMessages(currentPage).then((msgs) => {
+          if (msgs.code != 200) return;
+          if (
+            msgs.data.some((newMsg: any) =>
+              messages.some((msg) => msg.id === newMsg.id)
+            )
+          )
+            return;
+
+          setShouldScrollDown(false);
+          setMessages((prevMessages) => [...msgs.data, ...prevMessages]);
+        });
+      }
+
       setShowScrollButton(
         scrollContainerRef.current!.scrollHeight / 1.5 >
           scrollContainerRef.current!.scrollTop &&
@@ -30,38 +88,47 @@ export default function Room({ params }: { params: { id: string } }) {
     };
 
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.addEventListener("scroll", (event) =>
-        handleScroll(event)
-      );
+      scrollContainerRef.current.addEventListener("scroll", handleScroll);
     }
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      // Remove the event listener from scrollContainerRef.current
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.removeEventListener("scroll", handleScroll);
+      }
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollContainerRef.current]);
+  }, [scrollContainerRef.current, currentPage, room]);
 
   useEffect(() => {
     setRoom(pms?.find((pm) => pm.id == params.id)!);
+    console.log("46", room);
   }, [params.id, pms, room]);
 
   useEffect(() => {
-    room?.fetchMessages().then(({ data }) => {
-      setMessages([...data]);
+    room?.fetchMessages(1).then((res) => {
+      setShouldScrollDown(true);
+      if (res.code == 200) setMessages([...res.data]);
     });
+    console.log("53", room);
   }, [room]);
 
   useEffect(() => {
-    client?.on("messageCreate", (message) => {
+    client?.on("messageCreate", (message, attachments) => {
+      console.log(attachments)
       if (message.roomId == params.id) {
+        //const data = new FormData();
+        //const attachment = data.append('file', new Blob([JSON.stringify(attachments)], { type: 'application/json' }));
+        setShouldScrollDown(true);
         setMessages([...messages, message]);
+        console.log(message.author.id, client.user!.id);
         if (message.author.id !== client.user!.id) {
           if (client.user?.status.name == "dnd") return;
-          if (typeof window !== "undefined") {
+          if (typeof window !== "undefined" && !document.hasFocus()) {
             const audio = new Audio("http://localhost:3000/ping.mp3");
-              if (!document.hasFocus()) {
-                audio.play();
-              }
+            audio.volume = 0.5;
+            audio.play();
           }
         }
       }
@@ -72,6 +139,16 @@ export default function Room({ params }: { params: { id: string } }) {
       client?.off("typingUpdate", () => {});
     };
   }, [client, messages, params]);
+
+  useEffect(() => {
+    const handleKeyUp = (e: KeyboardEvent) => {};
+
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keyup", (event) => handleKeyUp(event));
+    };
+  }, []);
 
   useEffect(() => {
     client?.on("typingUpdate", (data) => {
@@ -90,9 +167,11 @@ export default function Room({ params }: { params: { id: string } }) {
   }, [client, room, params, typing]);
 
   useEffect(() => {
-    if (scrollContainerRef.current)
-      scrollContainerRef.current.scrollTop =
-        scrollContainerRef.current.scrollHeight;
+    if (shouldScrollDown) {
+      if (scrollContainerRef.current)
+        scrollContainerRef.current.scrollTop =
+          scrollContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -112,6 +191,11 @@ export default function Room({ params }: { params: { id: string } }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTyping, room]);
+
+  const onSelectFile = (e: any | null) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    setImage(e?.target!.files[0]);
+  };
 
   return (
     <Layout>
@@ -134,92 +218,66 @@ export default function Room({ params }: { params: { id: string } }) {
         >
           {showScrollButton && (
             <button
-              className="absolute right-10 bottom-15 cursor-pointer z-[999]"
+              className="absolute right-10 bottom-15 cursor-pointer z-[999] bg-[#737d3c] rounded-md p-2"
               onClick={() => {
                 if (scrollContainerRef.current)
                   scrollContainerRef.current.scrollTop =
                     scrollContainerRef.current.scrollHeight;
               }}
             >
-              DOWN
+              <ArrowBigDown />
             </button>
           )}
 
           <ul
-            className="w-full h-fit flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-red-500 scrollbar-thumb-rounded-full scrollbar-track-transparent relative"
+            className="w-full h-fit flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-[#737d3c] scrollbar-thumb-rounded-full scrollbar-track-transparent relative"
             ref={scrollContainerRef}
           >
+            <div className="pt-[25px]">
+              <h1>
+                <b>
+                  @
+                  {room?.recipients.find(
+                    (recipient) => recipient.id != client?.user!.id
+                  )?.displayName ||
+                    room?.recipients.find(
+                      (recipient) => recipient.id != client?.user!.id
+                    )?.username}
+                </b>
+              </h1>
+              <p>This is the start of your conversation</p>
+            </div>
+            <hr className="my-[15px] opacity-10 w-[85%]" />{" "}
+            {/* Why is it like  */}
             {messages.map((message, index) => {
-              if (index > 0) {
-                console.log(client?.user?.id);
-                if (messages[index - 1].author.id == message.author.id)
-                  return (
-                    <li className="flex gap-2.5">
-                      <div className="w-8 flex-shrink-0"></div>
-                      <span className="text-sm">{message.content}</span>
-                    </li>
-                  );
-                else
-                  return (
-                    <li key={index} className="flex gap-2.5 pt-4">
-                      <div className="w-8 h-8 flex-shrink-0">
-                        <Image
-                          src={message.author.avatar}
-                          width={42}
-                          height={42}
-                          alt="profile"
-                          className="rounded-full select-none"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <div className="flex gap-1 mt-[-8px]">
-                          <span>
-                            <b>
-                              {message.author.displayName ||
-                                message.author.username}
-                            </b>
-                            &nbsp;
-                            <TimeAgo
-                              className="text-gray-400 text-xs"
-                              date={message.createdAt}
-                            />
-                          </span>
-                        </div>
-                        <span className="text-sm">{message.content}</span>
-                      </div>
-                    </li>
-                  );
-              } else {
-                return (
-                  <li key={index} className="flex gap-2.5 pt-2">
-                    <div className="w-8 h-8 flex-shrink-0">
-                      <Image
-                        src={message.author.avatar}
-                        width={42}
-                        height={42}
-                        alt="profile"
-                        className="rounded-full select-none"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <div className="flex gap-1 mt-[-8px]">
-                        <span>
-                          <b>
-                            {message.author.displayName ||
-                              message.author.username}
-                          </b>
-                          &nbsp;
-                          <TimeAgo
-                            className="text-gray-400 text-xs"
-                            date={message.createdAt}
-                          />
-                        </span>
-                      </div>
-                      <span className="text-sm">{message.content}</span>
-                    </div>
-                  </li>
-                );
-              }
+              return (
+                <ContextMenu key={index}>
+                  <ContextMenuTrigger>
+                    <Message
+                      messages={messages}
+                      message={message}
+                      //attachments={attachments}
+                      index={index}
+                    />
+                  </ContextMenuTrigger>
+                  <ContextMenuContent>
+                    <ContextMenuItem>Reply</ContextMenuItem>
+                    <ContextMenuItem onClick={() => copyText!(message.content)}>
+                      Copy Text
+                    </ContextMenuItem>
+                    {message.author.id == client?.user?.id && (
+                      <>
+                        <ContextMenuItem>Edit Message</ContextMenuItem>
+                        <ContextMenuItem>Delete Message</ContextMenuItem>
+                      </>
+                    )}
+                    <div className="w-full h-0.5 rounded-full bg-gray-500" />
+                    <ContextMenuItem onClick={() => copyText!(message.id)}>
+                      Copy Message ID
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                </ContextMenu>
+              );
             })}
           </ul>
         </div>
@@ -243,13 +301,20 @@ export default function Room({ params }: { params: { id: string } }) {
               height: "65%",
             }}
           >
-            <ImagePlus
-              onClick={() => {}}
-              className="cursor-pointer hover:text-red-500 rounded-sm"
-            />
+            <div className="flex group">
+              <input
+                id="images"
+                className="absolute w-6 h-6 opacity-0 cursor-pointer"
+                multiple={true}
+                type="file"
+                onChange={onSelectFile}
+                accept="image/png, image/gif, image/jpeg"
+              ></input>
+              <ImagePlus className="cursor-pointer group-hover:text-red-500 rounded-sm" />
+            </div>
           </div>
-          <textarea
-          className="placeholder:select-none"
+          {/* <textarea
+            className="placeholder:select-none"
             id="chatbox"
             value={content}
             onChange={(event) => {
@@ -288,7 +353,44 @@ export default function Room({ params }: { params: { id: string } }) {
               MozBoxShadow: "none",
               resize: "none",
             }}
-          ></textarea>
+          ></textarea> */}
+          <div
+            id="chatbox"
+            style={{
+              width: "89%",
+              fontSize: "15px",
+              padding: "6.5px",
+              height: "65%",
+              backgroundColor: "#171717",
+              boxSizing: "border-box",
+              boxShadow: "none",
+              border: "none",
+              overflow: "auto",
+              maxHeight: "200",
+              outline: "none",
+              WebkitBoxShadow: "none",
+              MozBoxShadow: "none",
+              resize: "none",
+            }}
+            placeholder={`Send a message to @${
+              room?.recipients.find(
+                (recipient) => recipient.id != client?.user!.id
+              )?.displayName ||
+              room?.recipients.find(
+                (recipient) => recipient.id != client?.user!.id
+              )?.username
+            }`}
+            contentEditable
+            onInput={(event) => setContent(event.currentTarget.innerText)}
+            onKeyDown={(event) => {
+              if (event.key == "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                room?.send(content, images);
+                setContent("");
+                event.currentTarget.innerText = "";
+              }
+            }}
+          ></div>
           <div
             className="items-center justify-between flex flex-row px-4"
             style={{

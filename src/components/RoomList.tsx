@@ -2,10 +2,15 @@ import { useClient } from "@/context/ClientContext";
 import Image from "next/image";
 import Link from "next/link";
 import { User } from "strafe.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouseChimney, faUserGroup, faNoteSticky } from '@fortawesome/free-solid-svg-icons'
 import { PmRoom } from "strafe.js/dist/structures/Room";
+import { usePathname } from 'next/navigation'
+import { useEffect } from "react";
 
 export default function RoomList() {
   const { client, pms } = useClient();
+  const pathname = usePathname();
 
   return (
     <div className="room-sidebar select-none">
@@ -25,15 +30,24 @@ export default function RoomList() {
           <hr className="opacity-10 w-" />
           <Link
             href={"/"}
-            className="p-1 rounded-md w-full font-bold hover:bg-[rgba(255,255,255,0.1)] text-left mt-2"
+            className={`p-1 rounded-md w-full items-center flex font-bold hover:bg-[rgba(255,255,255,0.1)] text-left mt-2 ${pathname == "/" ? 'bg-[rgba(255,255,255,0.1)]' : ''}`}
           >
+            <FontAwesomeIcon icon={faHouseChimney} className="mr-2"/>
             Home
           </Link>
           <Link
             href={"/friends"}
-            className="p-1 rounded-md w-full font-bold hover:bg-[rgba(255,255,255,0.1)] text-left"
+            className={`p-1 rounded-md w-full items-center flex font-bold hover:bg-[rgba(255,255,255,0.1)] text-left mt-1.5 ${pathname == "/friends" ? 'bg-[rgba(255,255,255,0.1)]' : ''}`}
           >
+            <FontAwesomeIcon icon={faUserGroup} className="mr-1.5" />  
             Friends
+          </Link>
+          <Link
+            href={"/notes"}
+            className={`p-1 rounded-md w-full items-center flex font-bold hover:bg-[rgba(255,255,255,0.1)] text-left mt-1.5 ${pathname == "/notes" ? 'bg-[rgba(255,255,255,0.1)]' : ''}`}
+          >
+            <FontAwesomeIcon icon={faNoteSticky} className="mr-3" />  
+            Notes
           </Link>
           <span className="mt-2.5 text-gray-500 hover:text-gray-400 font-bold uppercase cursor-pointer text-sm">
             Private Messages
@@ -43,7 +57,7 @@ export default function RoomList() {
               return (
                 <li
                   key={index}
-                  className="w-full p-1 hover:bg-stone-800 rounded-md cursor-pointer"
+                  className={`w-full p-1 hover:bg-stone-800 rounded-md cursor-pointer ${pathname == `/rooms/${pm.id}` ? 'bg-[rgba(255,255,255,0.1)]' : ''}`}
                 >
                   <PrivateMessage
                     pm={pm}
@@ -82,7 +96,7 @@ function PrivateMessage({ pm, user }: { pm?: PmRoom; user?: User }) {
         ></div>
       </div>
       <div className="flex flex-col">
-        <span className="text-[14px] font-bold">{user.username}</span>
+        <span className="text-[14px] font-bold">{user.displayName || user.username}</span>
         <span className="text-[11px]">
           {user.status.name.charAt(0).toUpperCase() + user.status.name.slice(1)}
         </span>

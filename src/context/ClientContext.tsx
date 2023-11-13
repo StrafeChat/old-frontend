@@ -28,7 +28,7 @@ interface IClientContext {
   setReady?: Dispatch<SetStateAction<boolean>>;
   setServerListPos?: Dispatch<SetStateAction<string>>;
   setStatus?: Dispatch<SetStateAction<string>>;
-  playPing?: () => void;
+  copyText?: (text: string) => void;
 }
 
 const ClientContext = createContext<IClientContext>({});
@@ -43,10 +43,17 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
   const [serverListPos, setServerListPos] = useState("");
   const [status, setStatus] = useState("");
 
-  const pingRef = useRef<HTMLAudioElement>(null);
+  const [copyStr, setCopyStr] = useState("");
+  const copyInput = useRef<HTMLInputElement>(null);
 
-  const playPing = () => {
-    if (pingRef.current) pingRef.current.play();
+  const copyText = (text: string) => {
+    console.log(text);
+    setCopyStr(text);
+    if (copyInput.current) {
+      copyInput.current.select();
+      copyInput.current.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(text);
+    }
   };
 
   useEffect(() => {
@@ -132,13 +139,10 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
         setReady,
         setServerListPos,
         setStatus,
-        playPing
+        copyText,
       }}
     >
-      <audio className="hidden" ref={pingRef} controls>
-        <source src="/ping.mp3" type="audio/mp3" />
-        Your browser does not support the audio tag.
-      </audio>
+      <input ref={copyInput} readOnly className="hidden" value={copyStr} />
       {children}
     </ClientContext.Provider>
   );
