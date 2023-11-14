@@ -31,6 +31,7 @@
     "react-markdown": "^9.0.0",
     "react-timeago": "^7.2.0",
     "remark-gfm": "^4.0.0",
+    "sass": "^1.69.5",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.4"

@@ -1,7 +1,7 @@
 "use client";
 import Layout from "@/components/Layout";
 import { useClient } from "@/context/ClientContext";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ImagePlus,
   Smile,
@@ -9,10 +9,7 @@ import {
   ArrowDownNarrowWide,
   ArrowBigDown,
 } from "lucide-react";
-import Image from "next/image";
 import { PmRoom } from "strafe.js/dist/structures/Room";
-import TimeAgo from "react-timeago";
-import Markdown from "react-markdown";
 import Message from "@/components/Message";
 import {
   ContextMenu,
@@ -20,17 +17,20 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import Image from "next/image";
 
 export default function Room({ params }: { params: { id: string } }) {
   const { client, pms, copyText } = useClient();
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const scrollContainerRef = useRef<HTMLUListElement>(null);
+  const chatInputRef = useRef<HTMLDivElement>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [emoji, setShowEmoji] = useState(false);
   const [typing, setTyping] = useState<string[]>([]);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [images, setImage] = useState<any[]>([]);
+  const [viewImages, setViewImage] = useState<any[]>([]);
   const [room, setRoom] = useState<PmRoom | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [shouldScrollDown, setShouldScrollDown] = useState(true);
@@ -115,11 +115,13 @@ export default function Room({ params }: { params: { id: string } }) {
   }, [room]);
 
   useEffect(() => {
-    client?.on("messageCreate", (message, attachments) => {
-      console.log(attachments)
+    client?.on("messageCreate", (message) => {
       if (message.roomId == params.id) {
-        //const data = new FormData();
-        //const attachment = data.append('file', new Blob([JSON.stringify(attachments)], { type: 'application/json' }));
+        const data = new FormData();
+        //images.map((img) => data.append('file', new Blob([JSON.stringify(img)], { type: 'application/json' })));
+        // message.attachments = data.getAll('file');
+        message.attachments = images;
+        console.log(data.getAll("file"));
         setShouldScrollDown(true);
         setMessages([...messages, message]);
         console.log(message.author.id, client.user!.id);
@@ -138,7 +140,7 @@ export default function Room({ params }: { params: { id: string } }) {
       client?.off("messageCreate", () => {});
       client?.off("typingUpdate", () => {});
     };
-  }, [client, messages, params]);
+  }, [client, messages, params, images]);
 
   useEffect(() => {
     const handleKeyUp = (e: KeyboardEvent) => {};
@@ -194,7 +196,19 @@ export default function Room({ params }: { params: { id: string } }) {
 
   const onSelectFile = (e: any | null) => {
     if (!e.target.files || e.target.files.length === 0) return;
-    setImage(e?.target!.files[0]);
+    setImage([...images, e?.target!.files]);
+
+  let reader = new FileReader();  
+  function readFile(index: number) {
+    if(index >= e?.target!.files.length) return;
+    let file = e?.target!.files[index];
+    reader.onload = function(a) {  
+      setViewImage([...viewImages, a?.target!.result]);
+      readFile(index+1)
+    }
+    reader.readAsDataURL(file);
+  }
+  readFile(0);
   };
 
   return (
@@ -214,7 +228,7 @@ export default function Room({ params }: { params: { id: string } }) {
           </div>
         </div>
         <div
-          className={`h-[calc(100%-104px)] w-full flex flex-col justify-end pl-[10px] pb-[20px]`}
+          className={`h-[calc(100%-184px)] w-full flex flex-col justify-end pl-[10px] pb-[20px]`}
         >
           {showScrollButton && (
             <button
@@ -238,17 +252,16 @@ export default function Room({ params }: { params: { id: string } }) {
                 <b>
                   @
                   {room?.recipients.find(
-                    (recipient) => recipient.id != client?.user!.id
+                    (recipient: any) => recipient.id != client?.user!.id
                   )?.displayName ||
                     room?.recipients.find(
-                      (recipient) => recipient.id != client?.user!.id
+                      (recipient: any) => recipient.id != client?.user!.id
                     )?.username}
                 </b>
               </h1>
               <p>This is the start of your conversation</p>
             </div>
             <hr className="my-[15px] opacity-10 w-[85%]" />{" "}
-            {/* Why is it like  */}
             {messages.map((message, index) => {
               return (
                 <ContextMenu key={index}>
@@ -256,7 +269,7 @@ export default function Room({ params }: { params: { id: string } }) {
                     <Message
                       messages={messages}
                       message={message}
-                      //attachments={attachments}
+                      attachments={message.attachments}
                       index={index}
                     />
                   </ContextMenuTrigger>
@@ -291,6 +304,22 @@ export default function Room({ params }: { params: { id: string } }) {
 
         {emoji && <div></div>}
 
+        {viewImages.length > 0 && (
+          <div className="relative w-full h-[5rem] bg-[rgba(0,0,0,0.75)] flex overflow-x-auto overflow-y-hidden items-center px-2">
+            <div className="absolute justify-between flex flex-row px-4 gap-4 items-center">
+                {viewImages.map((im, i = 0) => ( 
+                  <div key={i++}>
+                    <Image
+                      src={im}
+                      alt={i.toString()}
+                      width="80"
+                      height="80"
+                    />
+                  </div>
+                ))}
+              </div>
+          </div>
+        )}
         <div className="w-full h-14 bg-black flex flex-row px-3 items-center">
           <div
             className="items-center justify-between flex flex-row px-4"

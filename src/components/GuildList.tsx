@@ -15,7 +15,7 @@ export default function GuildList({ orientation }: { orientation: string }) {
   const [statusColor, setStatusColor] = useState("");
 
   return (
-    <ul className={`guild-sidebar-${orientation}`}>
+    <ul className={`guild-sidebar-${orientation} border-r border-gray-300 `}>
       <ContextMenu>
         <ContextMenuTrigger className="relative rounded-full hover:bg-stone-800">
           <img src={client?.user?.avatar ? client.user.avatar : ""} className="border border-[#2F3136] w-10 h-10 select-none p-0.5 rounded-full" alt="profile picture" />

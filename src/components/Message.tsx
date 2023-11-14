@@ -1,24 +1,27 @@
 import Image from "next/image";
 import Markdown, { Components } from "react-markdown";
 import ReactTimeago from "react-timeago";
-import remarkGfm from 'remark-gfm'
+import remarkGfm from "remark-gfm";
 
 const components: Partial<Components> = {
-  p: ({ node, ...props }) => {
-    return (
-      <>
-        {node?.children.map((child: any, index) => (
-          <div className="text-md" key={index}>
-            {child.tagName != "code" ? child.value : (
-                <div className="bg-neutral-700 w-fit p-1 my-1 rounded-md">
-                {child.children.map((child: any) => child.value)}
-                </div>
-            )}
-          </div>
-        ))}
-      </>
-    );
-  },
+  // p: ({ node }) => {
+  //   console.log(node)
+  //   return (
+  //     <>
+  //       {node?.children.map((child, index) => (
+  //         <div className="text-md" key={index}>
+  //           {child.tagName != "code" ? (
+  //             child
+  //           ) : (
+  //             <div className="bg-neutral-700 w-fit p-1 my-1 rounded-md">
+  //               {child.children.map((child: any) => child.value)}
+  //             </div>
+  //           )}
+  //         </div>
+  //       ))}
+  //     </>
+  //   );
+  // },
   h1: ({ node }) => {
     return (
       <>
@@ -34,38 +37,139 @@ const components: Partial<Components> = {
     return (
       <>
         {node?.children.map((child, index) => (
-            <div key={index} className="pr-4">{(child as any).children?.map((child: any, key: number) => (
-                <code className="text-md p-1 w-full bg-black rounded-md block" key={key}>
-                    {(child as any).value}
-                </code>
-            ))}</div>
-        //   <code className="text-md p-1 w-full bg-black rounded-md" key={index}>
-        //     {(child as any).value}
-        //   </code>
+          <div key={index} className="pr-4">
+            {(child as any).children?.map((child: any, key: number) => (
+              <code
+                className="text-md p-1 w-full bg-black rounded-md block"
+                key={key}
+              >
+                {(child as any).value}
+              </code>
+            ))}
+          </div>
+          //   <code className="text-md p-1 w-full bg-black rounded-md" key={index}>
+          //     {(child as any).value}
+          //   </code>
         ))}
       </>
     );
   },
-  blockquote: ({node}) => {
+  blockquote: ({ node }) => {
     return (
-        <blockquote>
+      <blockquote>
         {node?.children.map((child: any, key) => (
-            <div key={key}>
+          <div key={key}>
             {child.children?.map((child: any, key: number) => (
-                <div key={key} className="flex gap-1 h-fit">
-                    <div className="w-1 h-[1.5rem] rounded-full bg-[rgba(255,255,255,0.1)]"></div>
-                    <span>{child.value}</span>
-                </div>
+              <div key={key} className="flex gap-1 h-fit">
+                <div className="w-1 h-[2rem] rounded-full bg-[rgba(255,255,255,0.1)]"></div>
+                <span>{child.value}</span>
+              </div>
             ))}
-            </div>
-            // <div key={key} className="flex gap-2">
-            //     <div className="w-1 h-full bg-black"/>
-            //     <span>{(child as any).value}</span>
-            // </div>
+          </div>
+          // <div key={key} className="flex gap-2">
+          //     <div className="w-1 h-full bg-black"/>
+          //     <span>{(child as any).value}</span>
+          // </div>
         ))}
-        </blockquote>
-    )
-  }
+      </blockquote>
+    );
+  },
+  table: ({ node }) => {
+    return (
+      <table className="bg-stone-900 border">
+        {node?.children.map((child) => {
+          switch (child.type) {
+            case "element":
+              switch (child.tagName) {
+                case "thead":
+                  return (
+                    <thead>
+                      {child.children.map((child) => {
+                        switch (child.type) {
+                          case "element":
+                            switch (child.tagName) {
+                              case "tr":
+                                return (
+                                  <tr>
+                                    {child.children.map((child) => {
+                                      switch (child.type) {
+                                        case "element":
+                                          switch (child.tagName) {
+                                            case "th":
+                                              return (
+                                                <>
+                                                  {child.children.map(
+                                                    (child) => {
+                                                      switch (child.type) {
+                                                        case "text":
+                                                          return (
+                                                            <th className="border p-2">
+                                                              {child.value}
+                                                            </th>
+                                                          );
+                                                      }
+                                                    }
+                                                  )}
+                                                </>
+                                              );
+                                          }
+                                      }
+                                    })}
+                                  </tr>
+                                );
+                            }
+                        }
+                      })}
+                    </thead>
+                  );
+                case "tbody":
+                  return (
+                    <tbody>
+                      {child.children.map((child) => {
+                        switch (child.type) {
+                          case "element":
+                            switch (child.tagName) {
+                              case "tr":
+                                return (
+                                  <tr>
+                                    {child.children.map((child) => {
+                                      switch (child.type) {
+                                        case "element":
+                                          switch (child.tagName) {
+                                            case "td":
+                                              return (
+                                                <>
+                                                  {child.children.map(
+                                                    (child) => {
+                                                      switch (child.type) {
+                                                        case "text":
+                                                          return (
+                                                            <td className="border p-2">
+                                                              {child.value}
+                                                            </td>
+                                                          );
+                                                      }
+                                                    }
+                                                  )}
+                                                </>
+                                              );
+                                          }
+                                      }
+                                    })}
+                                  </tr>
+                                );
+                            }
+                        }
+                      })}
+                    </tbody>
+                  );
+              }
+              break;
+          }
+        })}
+      </table>
+    );
+  },
 };
 
 const plugins = [remarkGfm];
@@ -73,20 +177,28 @@ const plugins = [remarkGfm];
 export default function Message({
   messages,
   message,
+  attachments,
   index,
 }: {
   messages: any[];
   message: any;
+  attachments: any[] | null;
   index: number;
 }) {
+
   if (index > 0) {
     if (messages[index - 1].author.id == message.author.id)
       return (
         <li key={index} className="flex gap-2.5 message break-normal">
           <div className="w-10 flex-shrink-0"></div>
-          <span style={{ whiteSpace: 'pre-line' }} className="w-full">
-            <Markdown remarkPlugins={plugins} components={components}>{message.content}</Markdown>
-          </span>
+          <div style={{ whiteSpace: "pre-line" }} className="w-full">
+            <Markdown remarkPlugins={plugins} components={components}>
+              {message.content}
+            </Markdown>
+          </div>
+          {/* {attachments?.map((attachment) => (
+            <Image key={attachment.url} src={attachment} alt='e' /> 
+          ))} */}
         </li>
       );
     else
@@ -112,8 +224,10 @@ export default function Message({
                 />
               </span>
             </div>
-            <div style={{ whiteSpace: 'pre-line' }} className="w-full">
-              <Markdown remarkPlugins={plugins} components={components}>{message.content}</Markdown>
+            <div style={{ whiteSpace: "pre-line" }} className="w-full">
+              <Markdown remarkPlugins={plugins} components={components}>
+                {message.content}
+              </Markdown>
             </div>
           </div>
         </li>
@@ -141,8 +255,10 @@ export default function Message({
               />
             </span>
           </div>
-          <div style={{ whiteSpace: 'pre-line' }} className="w-full">
-            <Markdown remarkPlugins={plugins} components={components}>{message.content}</Markdown>
+          <div style={{ whiteSpace: "pre-line" }} className="w-full">
+            <Markdown remarkPlugins={plugins} components={components}>
+              {message.content}
+            </Markdown>
           </div>
         </div>
       </li>

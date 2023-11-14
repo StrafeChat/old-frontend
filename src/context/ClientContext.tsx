@@ -57,7 +57,7 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
   };
 
   useEffect(() => {
-    if (pathname.startsWith("/signup") || pathname.startsWith("/login")) return;
+    if (pathname.startsWith("/register") || pathname.startsWith("/login")) return;
     document.addEventListener("contextmenu", (event) => {
       if ((event.target as HTMLElement).id != "chatbox") event.preventDefault();
     });
@@ -79,7 +79,17 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
         });
         setClientError(false);
       });
-    } else if (!client.options.token) client.login(cookie.get("token")!);
+    } else if (!client.options.token) { 
+      client.login(cookie.get("token")!); 
+      client.on("error", (err) => {
+        if (err.code == 4004) {
+          cookie.remove("token");
+          window.location.href = "/login";
+        }
+      });
+  } else if (!cookie.get("token")) {
+    window.location.href = "/login";
+  }
   }, [client, pathname]);
 
   useEffect(() => {

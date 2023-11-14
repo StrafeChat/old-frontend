@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 :root {
   --bg-primary: #262626;
@@ -17,7 +17,7 @@
   --accent-primary: rgb(255, 90, 90);
   color: white;
 
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
@@ -28,8 +28,10 @@ div.form-wrapper {
   @apply w-screen h-screen flex justify-center items-center;
 }
 
-div.form-wrapper form {
-  @apply w-full h-full md:w-[720px] md:h-fit p-4 bg-[var(--bg-secondary)];
+div.form-wrapper {
+  form {
+    @apply w-full h-full md:w-[720px] md:h-fit p-4 bg-[var(--bg-secondary)];
+  }
 }
 
 div.form-wrapper form label {
@@ -73,7 +75,7 @@ div.room-sidebar {
 }
 
 div.main-wrapper {
-  @apply w-[calc(100%-13rem)]
+  @apply w-[calc(100%-13rem)];
 }
 
 div[role="menu"] {
@@ -157,8 +159,12 @@ button[role="switch"] span {
   @apply bg-white;
 }
 
-[contenteditable=true]:empty:not(:focus):before{
-  content:attr(placeholder);
-  color:grey;
-  font-style:italic;
+[contenteditable="true"]:empty:not(:focus):before {
+  content: attr(placeholder);
+  color: grey;
+  font-style: italic;
+}
+
+.loading {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' width='1440' height='1000' preserveAspectRatio='none' viewBox='0 0 1440 1000'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1114%26quot%3b)' fill='none'%3e%3crect width='1440' height='1000' x='0' y='0' fill='rgba(38%2c 38%2c 38%2c 1)'%3e%3c/rect%3e%3cpath d='M139 1000L1139 0L1944.5 0L944.5 1000z' fill='url(%26quot%3b%23SvgjsLinearGradient1115%26quot%3b)'%3e%3c/path%3e%3cpath d='M1430 1000L430 0L-341 0L659 1000z' fill='url(%26quot%3b%23SvgjsLinearGradient1116%26quot%3b)'%3e%3c/path%3e%3cpath d='M826.4199343613293 1000L1440 386.4199343613293L1440 1000z' fill='url(%26quot%3b%23SvgjsLinearGradient1115%26quot%3b)'%3e%3c/path%3e%3cpath d='M0 1000L613.5800656386707 1000L 0 386.4199343613293z' fill='url(%26quot%3b%23SvgjsLinearGradient1116%26quot%3b)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1114'%3e%3crect width='1440' height='1000' fill='white'%3e%3c/rect%3e%3c/mask%3e%3clinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='SvgjsLinearGradient1115'%3e%3cstop stop-color='rgba(29%2c 29%2c 29%2c 1)' offset='0'%3e%3c/stop%3e%3cstop stop-opacity='0' stop-color='rgba(29%2c 29%2c 29%2c 1)' offset='0.66'%3e%3c/stop%3e%3c/linearGradient%3e%3clinearGradient x1='100%25' y1='100%25' x2='0%25' y2='0%25' id='SvgjsLinearGradient1116'%3e%3cstop stop-color='rgba(29%2c 29%2c 29%2c 1)' offset='0'%3e%3c/stop%3e%3cstop stop-opacity='0' stop-color='rgba(29%2c 29%2c 29%2c 1)' offset='0.66'%3e%3c/stop%3e%3c/linearGradient%3e%3c/defs%3e%3c/svg%3e");
 }

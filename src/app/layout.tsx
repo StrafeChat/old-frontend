@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "./globals.scss";
 import { ClientProvider } from "@/context/ClientContext";
 
 export const metadata: Metadata = {

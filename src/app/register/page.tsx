@@ -50,8 +50,8 @@ export default function SignUp() {
   return (
     <div className="form-wrapper">
       <form onSubmit={(event) => handleSubmit(event)}>
-        <h1 className="title">Sign Up</h1>
-        <div className="flex flex-col gap-4">
+        <h1 className="title">Register</h1>
+        <div className="input-wrapper">
           <div className="flex flex-col">
             <label className="title">Email</label>
             <input
@@ -115,7 +115,7 @@ export default function SignUp() {
               />
             </div>
           </div>
-          <button className="submit">Sign Up</button>
+          <button className="submit">Register</button>
         </div>
       </form>
     </div>

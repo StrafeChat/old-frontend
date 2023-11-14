@@ -81,7 +81,7 @@ export default function Login() {
             )}
           />
           <Button className="bg-[#737d3c] w-full" type="submit"><b>Submit</b></Button>
-          <p>Don&apos;t have an account? <a href="/signup" className="text-[#737d3c]">Sign Up</a></p>
+          <p>Don&apos;t have an account? <a href="/register" className="text-[#737d3c]">Register</a></p>
         </form>
       </Form>
     </div>
