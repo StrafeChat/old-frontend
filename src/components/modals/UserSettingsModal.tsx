@@ -22,7 +22,7 @@ export default function UserSettingsModal({ show, set }: { show: boolean, set: D
     }, [set]);
 
     return (
-        <div className="absolute top-0 left-0 w-full h-full flex z-[999]">
+        <div role="modal">
             <SettingsList currentSetting={currentSetting} setCurrentSetting={setCurrentSetting} />
             <div className="main-wrapper overflow-hidden p-4 relative bg-stone-900">
                 <XSquare onClick={() => set(false)} className="absolute top-3 right-3 cursor-pointer hover:text-red-500 rounded-sm" />

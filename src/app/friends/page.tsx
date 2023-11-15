@@ -9,23 +9,22 @@ import {
 } from "@/components/ui/context-menu";
 import { Switch } from "@/components/ui/switch";
 import { useClient } from "@/context/ClientContext";
-import {
-  MoreVertical,
-} from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
-  faUserPlus, 
-  faCheck, 
+import {
+  faUserPlus,
+  faCheck,
   faX,
   faMessage,
-  faEllipsisVertical
- } from '@fortawesome/free-solid-svg-icons'
+  faEllipsisVertical,
+} from "@fortawesome/free-solid-svg-icons";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Router } from "next/router";
 import { useEffect, useState } from "react";
 import { Client, Friend, User } from "strafe.js";
+import Header from "@/components/Header";
+import Body from "@/components/Body";
 
 export default function Friends() {
   const { client, friends } = useClient();
@@ -34,88 +33,87 @@ export default function Friends() {
 
   return (
     <Layout>
-      <div className="w-full h-full">
-        <div className="w-full h-12 rounded-b-lg bg-neutral-900 flex justify-between px-4 items-center font-bold">
-          <div className="flex items-center">
-            <h2 className="">Friends</h2>
-            <div className="w-[1px] mx-4 h-5 bg-gray-500"></div>
-            <div className="flex gap-5">
-              <button
-                style={{
-                  backgroundColor: `${
-                    view === "online" ? "rgba(255,255,255,0.1)" : ""
-                  }`,
-                  borderRadius: "7px",
-                  padding: "2px",
-                }}
-                className="hover:bg-[#222222]"
-                onClick={() => setView("online")}
-              >
-                Online
-              </button>
-              <button
-                style={{
-                  backgroundColor: `${
-                    view === "all" ? "rgba(255,255,255,0.1)" : ""
-                  }`,
-                  borderRadius: "7px",
-                  padding: "2px",
-                }}
-                className="hover:bg-[#222222]"
-                onClick={() => setView("all")}
-              >
-                All
-              </button>
-              <button
-                style={{
-                  backgroundColor: `${
-                    view === "pending" ? "rgba(255,255,255,0.1)" : ""
-                  }`,
-                  borderRadius: "7px",
-                  padding: "2px",
-                }}
-                className="hover:bg-[#222222]"
-                onClick={() => setView("pending")}
-              >
-                Pending
-              </button>
-              <button
-                style={{
-                  backgroundColor: `${
-                    view === "blocked" ? "rgba(255,255,255,0.1)" : ""
-                  }`,
-                  borderRadius: "7px",
-                  padding: "2px",
-                }}
-                className="hover:bg-[#222222]"
-                onClick={() => setView("blocked")}
-              >
-                Blocked
-              </button>
-              <button
-                style={{
-                  backgroundColor: `${
-                    view === "settings" ? "rgba(255,255,255,0.1)" : ""
-                  }`,
-                  borderRadius: "7px",
-                  padding: "2px",
-                }}
-                className="hover:bg-[#222222]"
-                onClick={() => setView("settings")}
-              >
-                Settings
-              </button>
-            </div>
+      <Header>
+        <div className="flex">
+        <h2><b>Friends</b></h2>
+          <div className="w-[1px] mx-4 h-5 bg-gray-500" />
+          <div className="flex gap-5">
+            <button
+              style={{
+                backgroundColor: `${
+                  view === "online" ? "rgba(255,255,255,0.1)" : ""
+                }`,
+                borderRadius: "7px",
+                padding: "2px",
+              }}
+              className="hover:bg-[#222222]"
+              onClick={() => setView("online")}
+            >
+              Online
+            </button>
+            <button
+              style={{
+                backgroundColor: `${
+                  view === "all" ? "rgba(255,255,255,0.1)" : ""
+                }`,
+                borderRadius: "7px",
+                padding: "2px",
+              }}
+              className="hover:bg-[#222222]"
+              onClick={() => setView("all")}
+            >
+              All
+            </button>
+            <button
+              style={{
+                backgroundColor: `${
+                  view === "pending" ? "rgba(255,255,255,0.1)" : ""
+                }`,
+                borderRadius: "7px",
+                padding: "2px",
+              }}
+              className="hover:bg-[#222222]"
+              onClick={() => setView("pending")}
+            >
+              Pending
+            </button>
+            <button
+              style={{
+                backgroundColor: `${
+                  view === "blocked" ? "rgba(255,255,255,0.1)" : ""
+                }`,
+                borderRadius: "7px",
+                padding: "2px",
+              }}
+              className="hover:bg-[#222222]"
+              onClick={() => setView("blocked")}
+            >
+              Blocked
+            </button>
+            {/* <button
+              style={{
+                backgroundColor: `${
+                  view === "settings" ? "rgba(255,255,255,0.1)" : ""
+                }`,
+                borderRadius: "7px",
+                padding: "2px",
+              }}
+              className="hover:bg-[#222222]"
+              onClick={() => setView("settings")}
+            >
+              Settings
+            </button> */}
           </div>
-          <button
-            onClick={() => setAddFriend(true)}
-            className="text-500 hover:text-blue-600"
-          >
-            <FontAwesomeIcon icon={faUserPlus}/>
-          </button>
-          {addFriend && <AddFriendModal set={setAddFriend} show={addFriend} />}
         </div>
-        <div className="w-full h-[calc(100%-3rem)] p-4 flex flex-col">
+        <button
+          onClick={() => setAddFriend(true)}
+          className="text-500 hover:text-blue-600"
+        >
+          <FontAwesomeIcon icon={faUserPlus} />
+        </button>
+      </Header>
+      <Body>
+        <>
           {view == "online" && (
             <FriendsOnline client={client!} friends={friends!} />
           )}
@@ -124,8 +122,8 @@ export default function Friends() {
             <FriendsPending client={client!} friends={friends!} />
           )}
           {view == "settings" && <FriendsSettings />}
-        </div>
-      </div>
+        </>
+      </Body>
     </Layout>
   );
 }
@@ -141,10 +139,10 @@ function FriendsOnline({
     client.user?.getPMS().then((dms) => {
       console.log(dms);
     });
-  }, []);
+  }, [client]);
 
   return (
-    <ul className="w-full h-full">
+    <div>
       <span className="text-gray-500 font-bold">
         ONLINE FRIENDS -{" "}
         {
@@ -157,28 +155,29 @@ function FriendsOnline({
           ).length
         }
       </span>
-      {friends.map(
-        (friend, index) =>
-          friend.status == "accepted" && (
-            <div key={index}>
-              {friend.senderId == client.user?.id ? (
-                <FriendCard user={friend.receiver} />
-              ) : (
-                <FriendCard user={friend.sender} />
-              )}
-            </div>
-          )
-      )}
-    </ul>
+      <ul>
+        {friends.map(
+          (friend, index) =>
+            friend.status == "accepted" && (
+              <li key={index}>
+                {friend.senderId == client.user?.id ? (
+                  <FriendCard user={friend.receiver} />
+                ) : (
+                  <FriendCard user={friend.sender} />
+                )}
+              </li>
+            )
+        )}
+      </ul>
+    </div>
   );
 }
 
 function FriendCard({ user }: { user: User | null }) {
-  
-    const router = useRouter();
+  const router = useRouter();
 
   return (
-    <li className="w-full px-2 py-4 border border-transparent border-t-neutral-800 hover:bg-[rgba(255,255,255,0.1)] flex items-center justify-between rounded-xl group cursor-pointer">
+    <div className="w-full px-2 py-4 border border-transparent border-t-neutral-800 hover:bg-[rgba(255,255,255,0.1)] flex items-center justify-between rounded-xl group cursor-pointer">
       <div className="flex gap-2">
         <div className="relative">
           <Image
@@ -217,10 +216,10 @@ function FriendCard({ user }: { user: User | null }) {
           <FontAwesomeIcon icon={faMessage} />
         </button>
         <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-green-500">
-        <FontAwesomeIcon icon={faEllipsisVertical} />
+          <FontAwesomeIcon icon={faEllipsisVertical} />
         </button>
       </div>
-    </li>
+    </div>
   );
 }
 
@@ -347,7 +346,7 @@ function FriendsPending({
                         </div>
                       </div>
                       <button className="p-2 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-red-500">
-                      <FontAwesomeIcon icon={faX}/>
+                        <FontAwesomeIcon icon={faX} />
                       </button>
                     </li>
                   </ContextMenuTrigger>
@@ -389,10 +388,10 @@ function FriendsPending({
                           className="p-3 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-green-500"
                           onClick={() => friend.update("accept")}
                         >
-                          <FontAwesomeIcon icon={faCheck}/>
+                          <FontAwesomeIcon icon={faCheck} />
                         </button>
                         <button className="p-3 bg-[rgba(0,0,0,0.2)] rounded-lg hover:text-red-500">
-                        <FontAwesomeIcon icon={faX}/>
+                          <FontAwesomeIcon icon={faX} />
                         </button>
                       </div>
                     </li>

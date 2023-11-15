@@ -21,21 +21,87 @@
 }
 
 body {
-  @apply w-screen h-screen bg-[var(--bg-primary)] overflow-hidden;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+  overflow: hidden;
 }
 
 div.form-wrapper {
-  @apply w-screen h-screen flex justify-center items-center;
-}
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-div.form-wrapper {
   form {
     @apply w-full h-full md:w-[720px] md:h-fit p-4 bg-[var(--bg-secondary)];
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      li.seperate {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      li label {
+        color: var(--text-secondary);
+      }
+
+      li:has(button) {
+        display: flex;
+        justify-content: center;
+
+        button {
+          background: var(--accent-primary);
+          padding: 0.5rem;
+          border-radius: 0.375rem;
+          width: 25rem;
+        }
+      }
+    }
   }
 }
 
-div.form-wrapper form label {
-  @apply text-[var(--text-secondary)];
+div.app-wrapper {
+  width: 100%;
+  height: 100%;
+
+  header {
+    width: 100%;
+    height: 3rem;
+    border-bottom-right-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+    background: rgb(23 23 23);
+    display: flex;
+    justify-content: space-between;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    align-items: center;
+    font: bold;
+  }
+
+  main {
+    width: 100%;
+    height: calc(100% - 3rem);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+div[role="modal"] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: 999;
 }
 
 input {
@@ -58,10 +124,6 @@ label.title {
   @apply font-bold uppercase;
 }
 
-button.submit {
-  @apply bg-[var(--accent-primary)] p-2 rounded-md;
-}
-
 ul.guild-sidebar-horizontal {
   @apply bg-[var(--bg-guilds)] w-16 min-h-full p-2 flex flex-col items-center;
 }
@@ -74,10 +136,6 @@ div.room-sidebar {
   @apply bg-[var(--bg-rooms)] w-52 h-full flex flex-col items-center;
 }
 
-div.main-wrapper {
-  @apply w-[calc(100%-13rem)];
-}
-
 div[role="menu"] {
   @apply bg-[var(--bg-ui)] border-none rounded-lg;
 }
@@ -87,7 +145,6 @@ div[role="menuitem"] {
 }
 
 /* Loading Screen */
-
 .loadingContainer {
   display: flex;
   justify-content: center;
@@ -152,7 +209,7 @@ button[role="switch"]:has(> span[data-state="unchecked"]) {
 }
 
 li.message:hover {
-  @apply bg-[rgba(0,0,0,0.25)];
+  background: rgba(0, 0, 0, 0.25);
 }
 
 button[role="switch"] span {

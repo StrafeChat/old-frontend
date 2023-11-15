@@ -15,21 +15,22 @@ import {
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import RepeatedBackground from "@/components/RepeatedBackground";
+import Link from "next/link";
 
-interface LoginForm {
+interface LoginData {
   email: string;
   password: string;
 }
 
 export default function Login() {
-  const form = useForm<LoginForm>({
+  const form = useForm<LoginData>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const handleSubmit = async (values: LoginForm) => {
+  const handleSubmit = async (values: LoginData) => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL!}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -47,41 +48,101 @@ export default function Login() {
     });
   };
 
+  // return (
+  //   <div className="form-wrapper">
+  //     <RepeatedBackground />
+  //     <Form {...form}>
+  //       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 rounded-md">
+  //       <h2 className="text-3xl font-bold text-center">Login</h2>
+  //         <FormField
+  //           control={form.control}
+  //           name={"email"}
+  //           render={({ field }) => (
+  //             <FormItem>
+  //               <FormLabel>EMAIL</FormLabel>
+  //               <FormControl>
+  //                 <Input placeholder="Enter your email." {...field} />
+  //               </FormControl>
+  //               {/* <FormDescription>This is your username</FormDescription> */}
+  //               <FormMessage />
+  //             </FormItem>
+  //           )}
+  //         />
+  //         <FormField
+  //           control={form.control}
+  //           name={"password"}
+  //           render={({ field }) => (
+  //             <FormItem>
+  //               <FormLabel>PASSWORD</FormLabel>
+  //               <FormControl>
+  //                 <Input type={"password"} placeholder="Enter your password." {...field} />
+  //               </FormControl>
+  //               <FormMessage />
+  //             </FormItem>
+  //           )}
+  //         />
+  //         <Button className="bg-[#737d3c] w-full" type="submit"><b>Submit</b></Button>
+  //         <p>Don&apos;t have an account? <a href="/register" className="text-[#737d3c]">Register</a></p>
+  //       </form>
+  //     </Form>
+  //   </div>
+  // );
+
   return (
     <div className="form-wrapper">
       <RepeatedBackground />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} method="POST" className="space-y-4 rounded-md">
-        <h2 className="text-3xl font-bold text-center">Login</h2>
-          <FormField
-            control={form.control}
-            name={"email"}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>EMAIL</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter your email." {...field} />
-                </FormControl>
-                {/* <FormDescription>This is your username</FormDescription> */}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name={"password"}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>PASSWORD</FormLabel>
-                <FormControl>
-                  <Input type={"password"} placeholder="Enter your password." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button className="bg-[#737d3c] w-full" type="submit"><b>Submit</b></Button>
-          <p>Don&apos;t have an account? <a href="/register" className="text-[#737d3c]">Register</a></p>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <h1 className="title">Login</h1>
+          <ul>
+            <li>
+              <FormField
+                control={form.control}
+                name={"email"}
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="title">Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="username@strafe.chat"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </li>
+            <li>
+              <FormField
+                control={form.control}
+                name={"password"}
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="title">Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="********"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </li>
+            <li>
+              <Button>Login</Button>
+            </li>
+            <li>
+              <p>
+                Don&apos;t have an account?{" "}
+                <Link href="/register" className="text-[#737d3c]">
+                  Register
+                </Link>
+              </p>
+            </li>
+          </ul>
         </form>
       </Form>
     </div>

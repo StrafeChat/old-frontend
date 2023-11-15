@@ -66,10 +66,6 @@ const components: Partial<Components> = {
               </div>
             ))}
           </div>
-          // <div key={key} className="flex gap-2">
-          //     <div className="w-1 h-full bg-black"/>
-          //     <span>{(child as any).value}</span>
-          // </div>
         ))}
       </blockquote>
     );
@@ -170,6 +166,22 @@ const components: Partial<Components> = {
       </table>
     );
   },
+  a: ({ node }) => {
+    return (
+      <>
+        {node?.children.map((child) => {
+          switch (child.type) {
+            case "text":
+              return (
+                <a id="message-link" className="text-red-500 hover:text-red-400 underline" href={child.value}>
+                  {child.value}
+                </a>
+              );
+          }
+        })}
+      </>
+    );
+  },
 };
 
 const plugins = [remarkGfm];
@@ -185,7 +197,6 @@ export default function Message({
   attachments: any[] | null;
   index: number;
 }) {
-
   if (index > 0) {
     if (messages[index - 1].author.id == message.author.id)
       return (
@@ -203,7 +214,7 @@ export default function Message({
       );
     else
       return (
-        <li key={index} className="flex gap-2.5 pt-2 message">
+        <li key={index} className="flex gap-2.5 pt-3.5 message">
           <div className="w-10 h-10 flex-shrink-0">
             <Image
               src={message.author.avatar}
@@ -234,7 +245,7 @@ export default function Message({
       );
   } else {
     return (
-      <li key={index} className="flex gap-2.5 pt-2 message">
+      <li key={index} className="flex gap-2.5 pt-3.5 message">
         <div className="w-10 h-10 flex-shrink-0">
           <Image
             src={message.author.avatar}

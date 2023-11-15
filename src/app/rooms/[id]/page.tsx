@@ -18,6 +18,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import Image from "next/image";
+import VisitLinkModal from "@/components/modals/VisitLinkModal";
 
 export default function Room({ params }: { params: { id: string } }) {
   const { client, pms, copyText } = useClient();
@@ -34,6 +35,7 @@ export default function Room({ params }: { params: { id: string } }) {
   const [room, setRoom] = useState<PmRoom | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [shouldScrollDown, setShouldScrollDown] = useState(true);
+  const [linkWarning, setLinkWarning] = useState({ link: "", show: false });
 
   // useEffect(() => {
   //   const handleScroll = (event: Event) => {
@@ -117,11 +119,7 @@ export default function Room({ params }: { params: { id: string } }) {
   useEffect(() => {
     client?.on("messageCreate", (message) => {
       if (message.roomId == params.id) {
-        const data = new FormData();
-        //images.map((img) => data.append('file', new Blob([JSON.stringify(img)], { type: 'application/json' })));
-        // message.attachments = data.getAll('file');
         message.attachments = images;
-        console.log(data.getAll("file"));
         setShouldScrollDown(true);
         setMessages([...messages, message]);
         console.log(message.author.id, client.user!.id);
@@ -145,10 +143,20 @@ export default function Room({ params }: { params: { id: string } }) {
   useEffect(() => {
     const handleKeyUp = (e: KeyboardEvent) => {};
 
+    const handleClick = (event: MouseEvent) => {
+      const element = event.target as HTMLElement;
+      if (element.id == "message-link") {
+        event.preventDefault();
+        setLinkWarning({ link: element.innerText, show: true });
+      }
+    };
+
     window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("click", handleClick);
 
     return () => {
       window.removeEventListener("keyup", (event) => handleKeyUp(event));
+      window.removeEventListener("click", handleClick);
     };
   }, []);
 
@@ -198,249 +206,206 @@ export default function Room({ params }: { params: { id: string } }) {
     if (!e.target.files || e.target.files.length === 0) return;
     setImage([...images, e?.target!.files]);
 
-  let reader = new FileReader();  
-  function readFile(index: number) {
-    if(index >= e?.target!.files.length) return;
-    let file = e?.target!.files[index];
-    reader.onload = function(a) {  
-      setViewImage([...viewImages, a?.target!.result]);
-      readFile(index+1)
+    let reader = new FileReader();
+    function readFile(index: number) {
+      if (index >= e?.target!.files.length) return;
+      let file = e?.target!.files[index];
+      reader.onload = function (a) {
+        setViewImage([...viewImages, a?.target!.result]);
+        readFile(index + 1);
+      };
+      reader.readAsDataURL(file);
     }
-    reader.readAsDataURL(file);
-  }
-  readFile(0);
+    readFile(0);
   };
 
   return (
     <Layout>
-      <div className="w-full h-full flex flex-col">
-        <div className="w-full h-12 rounded-b-lg bg-neutral-900 flex justify-between px-4 items-center font-bold">
-          <div className="flex gap-2 items-center">
-            <span className="select-none">
-              @
-              {room?.recipients.find(
+      <>
+        {linkWarning.show && (
+          <VisitLinkModal
+            show={linkWarning.show}
+            set={setLinkWarning}
+            link={linkWarning.link}
+          />
+        )}
+      </>
+      <div className="w-full h-12 rounded-b-lg bg-neutral-900 flex justify-between px-4 items-center font-bold">
+        <div className="flex gap-2 items-center">
+          <span className="select-none">
+            @
+            {room?.recipients.find(
+              (recipient) => recipient.id != client?.user!.id
+            )?.displayName ||
+              room?.recipients.find(
                 (recipient) => recipient.id != client?.user!.id
-              )?.displayName ||
-                room?.recipients.find(
-                  (recipient) => recipient.id != client?.user!.id
-                )?.username}
-            </span>
-          </div>
+              )?.username}
+          </span>
         </div>
-        <div
-          className={`h-[calc(100%-184px)] w-full flex flex-col justify-end pl-[10px] pb-[20px]`}
-        >
-          {showScrollButton && (
-            <button
-              className="absolute right-10 bottom-15 cursor-pointer z-[999] bg-[#737d3c] rounded-md p-2"
-              onClick={() => {
-                if (scrollContainerRef.current)
-                  scrollContainerRef.current.scrollTop =
-                    scrollContainerRef.current.scrollHeight;
-              }}
-            >
-              <ArrowBigDown />
-            </button>
-          )}
-
-          <ul
-            className="w-full h-fit flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-[#737d3c] scrollbar-thumb-rounded-full scrollbar-track-transparent relative"
-            ref={scrollContainerRef}
+      </div>
+      <div className="h-[calc(100%-184px)] w-full flex flex-col justify-end pl-[10px] pb-[20px]">
+        {showScrollButton && (
+          <button
+            className="absolute right-10 bottom-15 cursor-pointer z-[999] bg-[#737d3c] rounded-md p-2"
+            onClick={() => {
+              if (scrollContainerRef.current)
+                scrollContainerRef.current.scrollTop =
+                  scrollContainerRef.current.scrollHeight;
+            }}
           >
-            <div className="pt-[25px]">
-              <h1>
-                <b>
-                  @
-                  {room?.recipients.find(
+            <ArrowBigDown />
+          </button>
+        )}
+        <ul
+          className="w-full h-fit flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-[#737d3c] scrollbar-thumb-rounded-full scrollbar-track-transparent relative"
+          ref={scrollContainerRef}
+        >
+          <div className="pt-[25px]">
+            <h1>
+              <b>
+                @
+                {room?.recipients.find(
+                  (recipient: any) => recipient.id != client?.user!.id
+                )?.displayName ??
+                  room?.recipients.find(
                     (recipient: any) => recipient.id != client?.user!.id
-                  )?.displayName ||
-                    room?.recipients.find(
-                      (recipient: any) => recipient.id != client?.user!.id
-                    )?.username}
-                </b>
-              </h1>
-              <p>This is the start of your conversation</p>
-            </div>
-            <hr className="my-[15px] opacity-10 w-[85%]" />{" "}
-            {messages.map((message, index) => {
-              return (
-                <ContextMenu key={index}>
-                  <ContextMenuTrigger>
-                    <Message
-                      messages={messages}
-                      message={message}
-                      attachments={message.attachments}
-                      index={index}
-                    />
-                  </ContextMenuTrigger>
-                  <ContextMenuContent>
-                    <ContextMenuItem>Reply</ContextMenuItem>
-                    <ContextMenuItem onClick={() => copyText!(message.content)}>
-                      Copy Text
-                    </ContextMenuItem>
-                    {message.author.id == client?.user?.id && (
-                      <>
-                        <ContextMenuItem>Edit Message</ContextMenuItem>
-                        <ContextMenuItem>Delete Message</ContextMenuItem>
-                      </>
-                    )}
-                    <div className="w-full h-0.5 rounded-full bg-gray-500" />
-                    <ContextMenuItem onClick={() => copyText!(message.id)}>
-                      Copy Message ID
-                    </ContextMenuItem>
-                  </ContextMenuContent>
-                </ContextMenu>
-              );
-            })}
-          </ul>
-        </div>
-
+                  )?.username}
+              </b>
+            </h1>
+            <p>This is the start of your conversation</p>
+          </div>
+          <hr className="my-[15px] opacity-10 w-[85%]" />{" "}
+          {messages.map((message, index) => {
+            return (
+              <ContextMenu key={index}>
+                <ContextMenuTrigger>
+                  <Message
+                    messages={messages}
+                    message={message}
+                    attachments={message.attachments}
+                    index={index}
+                  />
+                </ContextMenuTrigger>
+                <ContextMenuContent>
+                  <ContextMenuItem>Reply</ContextMenuItem>
+                  <ContextMenuItem onClick={() => copyText!(message.content)}>
+                    Copy Text
+                  </ContextMenuItem>
+                  {message.author.id == client?.user?.id && (
+                    <>
+                      <ContextMenuItem>Edit Message</ContextMenuItem>
+                      <ContextMenuItem>Delete Message</ContextMenuItem>
+                    </>
+                  )}
+                  <div className="w-full h-0.5 rounded-full bg-gray-500" />
+                  <ContextMenuItem onClick={() => copyText!(message.id)}>
+                    Copy Message ID
+                  </ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
+            );
+          })}
+        </ul>
+      </div>
+      <>
         {typing.filter((type) => type != client?.user?.username).length > 0 && (
           <div className="w-full h-4 pl-[20px] py-[10px] bg-black flex items-center">
             {typing.filter((type) => type != client?.user?.username).join(", ")}{" "}
             is typing...
           </div>
         )}
-
         {emoji && <div></div>}
-
         {viewImages.length > 0 && (
           <div className="relative w-full h-[5rem] bg-[rgba(0,0,0,0.75)] flex overflow-x-auto overflow-y-hidden items-center px-2">
             <div className="absolute justify-between flex flex-row px-4 gap-4 items-center">
-                {viewImages.map((im, i = 0) => ( 
-                  <div key={i++}>
-                    <Image
-                      src={im}
-                      alt={i.toString()}
-                      width="80"
-                      height="80"
-                    />
-                  </div>
-                ))}
-              </div>
-          </div>
-        )}
-        <div className="w-full h-14 bg-black flex flex-row px-3 items-center">
-          <div
-            className="items-center justify-between flex flex-row px-4"
-            style={{
-              backgroundColor: "#171717",
-              width: "5%",
-              borderRadius: "4px 0px 0px 4px",
-              height: "65%",
-            }}
-          >
-            <div className="flex group">
-              <input
-                id="images"
-                className="absolute w-6 h-6 opacity-0 cursor-pointer"
-                multiple={true}
-                type="file"
-                onChange={onSelectFile}
-                accept="image/png, image/gif, image/jpeg"
-              ></input>
-              <ImagePlus className="cursor-pointer group-hover:text-red-500 rounded-sm" />
+              {viewImages.map((im, i = 0) => (
+                <div key={i++}>
+                  <Image src={im} alt={i.toString()} width="80" height="80" />
+                </div>
+              ))}
             </div>
           </div>
-          {/* <textarea
-            className="placeholder:select-none"
-            id="chatbox"
-            value={content}
-            onChange={(event) => {
-              setContent(event.target.value);
-              setIsTyping(event.target.value.trim() !== "");
-            }}
-            placeholder={`Send a message to @${
-              room?.recipients.find(
-                (recipient) => recipient.id != client?.user!.id
-              )?.displayName ||
-              room?.recipients.find(
-                (recipient) => recipient.id != client?.user!.id
-              )?.username
-            }`}
-            onKeyUp={(event) => {
-              if (event.key == "Enter" && !event.shiftKey) {
-                event?.preventDefault();
-                room!.send!(content);
-                setContent("");
-              }
-            }}
-            spellCheck={true}
-            style={{
-              width: "89%",
-              fontSize: "15px",
-              padding: "6.5px",
-              height: "65%",
-              backgroundColor: "#171717",
-              boxSizing: "border-box",
-              boxShadow: "none",
-              border: "none",
-              overflow: "auto",
-              maxHeight: "200",
-              outline: "none",
-              WebkitBoxShadow: "none",
-              MozBoxShadow: "none",
-              resize: "none",
-            }}
-          ></textarea> */}
-          <div
-            id="chatbox"
-            style={{
-              width: "89%",
-              fontSize: "15px",
-              padding: "6.5px",
-              height: "65%",
-              backgroundColor: "#171717",
-              boxSizing: "border-box",
-              boxShadow: "none",
-              border: "none",
-              overflow: "auto",
-              maxHeight: "200",
-              outline: "none",
-              WebkitBoxShadow: "none",
-              MozBoxShadow: "none",
-              resize: "none",
-            }}
-            placeholder={`Send a message to @${
-              room?.recipients.find(
-                (recipient) => recipient.id != client?.user!.id
-              )?.displayName ||
-              room?.recipients.find(
-                (recipient) => recipient.id != client?.user!.id
-              )?.username
-            }`}
-            contentEditable
-            onInput={(event) => setContent(event.currentTarget.innerText)}
-            onKeyDown={(event) => {
-              if (event.key == "Enter" && !event.shiftKey) {
-                event.preventDefault();
-                room?.send(content, images);
-                setContent("");
-                event.currentTarget.innerText = "";
-              }
-            }}
-          ></div>
-          <div
-            className="items-center justify-between flex flex-row px-4"
-            style={{
-              backgroundColor: "#171717",
-              width: "8%",
-              borderRadius: "0px 4px 4px 0px",
-              height: "65%",
-            }}
-          >
-            <ScanSearch
-              onClick={() => {}}
-              className="cursor-pointer hover:text-red-500 rounded-sm"
-            />
-            &nbsp;
-            <Smile
-              onClick={() => {
-                setShowEmoji(!emoji);
-              }}
-              className="cursor-pointer hover:text-red-500 rounded-sm"
-            />
+        )}
+      </>
+      <div className="w-full h-14 bg-black flex flex-row px-3 items-center">
+        <div
+          className="items-center justify-between flex flex-row px-4"
+          style={{
+            backgroundColor: "#171717",
+            width: "5%",
+            borderRadius: "4px 0px 0px 4px",
+            height: "65%",
+          }}
+        >
+          <div className="flex group">
+            <input
+              id="images"
+              className="absolute w-6 h-6 opacity-0 cursor-pointer"
+              multiple={true}
+              type="file"
+              onChange={onSelectFile}
+              accept="image/png, image/gif, image/jpeg"
+            ></input>
+            <ImagePlus className="cursor-pointer group-hover:text-red-500 rounded-sm" />
           </div>
+        </div>
+        <div
+          id="chatbox"
+          style={{
+            width: "89%",
+            fontSize: "15px",
+            padding: "6.5px",
+            height: "65%",
+            backgroundColor: "#171717",
+            boxSizing: "border-box",
+            boxShadow: "none",
+            border: "none",
+            overflow: "auto",
+            maxHeight: "200",
+            outline: "none",
+            WebkitBoxShadow: "none",
+            MozBoxShadow: "none",
+            resize: "none",
+          }}
+          placeholder={`Send a message to @${
+            room?.recipients.find(
+              (recipient) => recipient.id != client?.user!.id
+            )?.displayName ||
+            room?.recipients.find(
+              (recipient) => recipient.id != client?.user!.id
+            )?.username
+          }`}
+          contentEditable
+          onInput={(event) => setContent(event.currentTarget.innerText)}
+          onKeyDown={(event) => {
+            if (event.key == "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              console.log(room!.send(content, images));
+              setContent("");
+              event.currentTarget.innerText = "";
+            }
+          }}
+        ></div>
+        <div
+          className="items-center justify-between flex flex-row px-4"
+          style={{
+            backgroundColor: "#171717",
+            width: "8%",
+            borderRadius: "0px 4px 4px 0px",
+            height: "65%",
+          }}
+        >
+          <ScanSearch
+            onClick={() => {}}
+            className="cursor-pointer hover:text-red-500 rounded-sm"
+          />
+          &nbsp;
+          <Smile
+            onClick={() => {
+              setShowEmoji(!emoji);
+            }}
+            className="cursor-pointer hover:text-red-500 rounded-sm"
+          />
         </div>
       </div>
     </Layout>
