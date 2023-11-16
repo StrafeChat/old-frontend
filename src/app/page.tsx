@@ -62,7 +62,7 @@ export default function Home() {
       className={`bg-[#737d3c] rounded-lg p-4 flex items-center`}
     >
       <div className="flex-shrink-0">
-        <FontAwesomeIcon icon={faCompass} />
+        <FontAwesomeIcon icon={faCompass} className="text-4xl" />
       </div>
       <div className="ml-4">
         <h2 className="text-lg font-semibold">Discover Strafe</h2>
