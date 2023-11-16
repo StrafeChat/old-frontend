@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import Layout from "@/components/Layout";
 import Header from "@/components/Header";
 import Body from "@/components/Body";
@@ -7,14 +7,15 @@ const page = () => {
   return (
     <Layout>
       <Header>
-        <h2><b>Discover</b></h2>
+        <h2>
+          <b>Discover</b>
+        </h2>
       </Header>
-       <Body>
+      <Body>
         <div>page</div>
-       </Body>
-    <div>page</div>
+      </Body>
     </Layout>
-  )
-}
+  );
+};
 
-export default page
+export default page;

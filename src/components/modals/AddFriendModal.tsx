@@ -8,6 +8,12 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useClient } from "@/context/ClientContext";
+import { Form } from "../ui/form";
+import { useForm } from "react-hook-form";
+
+interface AddFriendData {
+  query: string;
+}
 
 export default function AddFriendModal({
   show,
@@ -16,9 +22,13 @@ export default function AddFriendModal({
   show: boolean;
   set: Dispatch<SetStateAction<boolean>>;
 }) {
+  const form = useForm<AddFriendData>({
+    defaultValues: {
+      query: "",
+    },
+  });
   const [isBrowser, setIsBrowser] = useState(false);
   const { client } = useClient();
-  const [query, setQuery] = useState("");
 
   useEffect(() => {
     setIsBrowser(true);
@@ -38,26 +48,30 @@ export default function AddFriendModal({
     }
   }, [set]);
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    const result = query.split("#");
-    client?.addFriend(result[0], result[1]);
+  const handleSubmit = async (values: AddFriendData) => {
+    const result = values.query.split("#");
+    await client?.addFriend(result[0], result[1]);
+    set(false);
   };
 
   return (
-    <form
-      onSubmit={(event) => handleSubmit(event)}
-      id="backdrop"
-      className="absolute w-full h-full left-0 top-0 bg-[rgba(0,0,0,0.75)] z-[999] flex flex-col justify-center items-center"
-    >
-      <div className="py-32 px-32 p-4 bg-slate-900 flex flex-col gap-2 rounded-lg">
-        <div className="flex-grow flex items-center justify-center">
-          <h2 className="font-semibold text-3xl text-center">Add Friend</h2>
-          
-            <Input/>
-         
-        </div>
-      </div>
-    </form>
+    <div id="backdrop" className="modal-overlay">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <header>Add Friend</header>
+          <div className="body">
+            <div className="row center">
+              <Input placeholder="strafe#0001" />
+            </div>
+            <div className="row center">
+              <Button type="button" onClick={() => set(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">Send</Button>
+            </div>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 }

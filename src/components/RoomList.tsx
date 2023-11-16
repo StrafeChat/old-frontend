@@ -13,7 +13,7 @@ export default function RoomList() {
   const pathname = usePathname();
 
   return (
-    <div className="room-sidebar select-none border-r border-gray-300">
+    <div className="room-sidebar select-none">
       <div className="w-full h-full flex flex-col items-start">
         <div className="w-full px-4 h-full flex flex-col">
           {/* We need to figure out what to do here next lol */}

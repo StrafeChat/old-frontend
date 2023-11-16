@@ -54,6 +54,18 @@ const components: Partial<Components> = {
       </>
     );
   },
+  code: ({node}) => {
+    return (
+      <>
+      {node?.children.map((child, index) => {
+        switch(child.type) {
+          case "text":
+            return <code className="bg-black p-0.5">{child.value}</code>
+        }
+      })}
+      </>
+    )
+  },
   blockquote: ({ node }) => {
     return (
       <blockquote>
@@ -173,7 +185,7 @@ const components: Partial<Components> = {
           switch (child.type) {
             case "text":
               return (
-                <a id="message-link" className="text-red-500 hover:text-red-400 underline" href={child.value}>
+                <a id="message-link" className="text-[#737d3c] hover:text-[#737d3c] underline" href={child.value}>
                   {child.value}
                 </a>
               );

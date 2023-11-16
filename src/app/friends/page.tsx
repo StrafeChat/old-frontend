@@ -33,9 +33,12 @@ export default function Friends() {
 
   return (
     <Layout>
+      <>{addFriend && <AddFriendModal show={addFriend} set={setAddFriend} />}</>
       <Header>
         <div className="flex">
-        <h2><b>Friends</b></h2>
+          <h2>
+            <b>Friends</b>
+          </h2>
           <div className="w-[1px] mx-4 h-5 bg-gray-500" />
           <div className="flex gap-5">
             <button
@@ -90,19 +93,6 @@ export default function Friends() {
             >
               Blocked
             </button>
-            {/* <button
-              style={{
-                backgroundColor: `${
-                  view === "settings" ? "rgba(255,255,255,0.1)" : ""
-                }`,
-                borderRadius: "7px",
-                padding: "2px",
-              }}
-              className="hover:bg-[#222222]"
-              onClick={() => setView("settings")}
-            >
-              Settings
-            </button> */}
           </div>
         </div>
         <button

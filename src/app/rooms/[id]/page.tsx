@@ -1,13 +1,14 @@
 "use client";
 import Layout from "@/components/Layout";
 import { useClient } from "@/context/ClientContext";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState, MouseEvent } from "react";
 import {
   ImagePlus,
   Smile,
   ScanSearch,
   ArrowDownNarrowWide,
   ArrowBigDown,
+  XSquare
 } from "lucide-react";
 import { PmRoom } from "strafe.js/dist/structures/Room";
 import Message from "@/components/Message";
@@ -25,7 +26,6 @@ export default function Room({ params }: { params: { id: string } }) {
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const scrollContainerRef = useRef<HTMLUListElement>(null);
-  const chatInputRef = useRef<HTMLDivElement>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [emoji, setShowEmoji] = useState(false);
   const [typing, setTyping] = useState<string[]>([]);
@@ -96,6 +96,7 @@ export default function Room({ params }: { params: { id: string } }) {
     return () => {
       // Remove the event listener from scrollContainerRef.current
       if (scrollContainerRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         scrollContainerRef.current.removeEventListener("scroll", handleScroll);
       }
     };
@@ -141,13 +142,16 @@ export default function Room({ params }: { params: { id: string } }) {
   }, [client, messages, params, images]);
 
   useEffect(() => {
-    const handleKeyUp = (e: KeyboardEvent) => {};
+    const handleKeyUp = (event: KeyboardEvent) => {
+      console.log(event.key);
+      if (event.key == "Escape") setViewImage([]);
+    };
 
-    const handleClick = (event: MouseEvent) => {
+    const handleClick = (event: globalThis.MouseEvent) => {
       const element = event.target as HTMLElement;
       if (element.id == "message-link") {
         event.preventDefault();
-        setLinkWarning({ link: element.innerText, show: true });
+        setLinkWarning({ link: (element as HTMLLinkElement).href, show: true });
       }
     };
 
@@ -156,7 +160,7 @@ export default function Room({ params }: { params: { id: string } }) {
 
     return () => {
       window.removeEventListener("keyup", (event) => handleKeyUp(event));
-      window.removeEventListener("click", handleClick);
+      window.removeEventListener("click", (event) => handleClick(event));
     };
   }, []);
 
@@ -182,6 +186,7 @@ export default function Room({ params }: { params: { id: string } }) {
         scrollContainerRef.current.scrollTop =
           scrollContainerRef.current.scrollHeight;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
   useEffect(() => {
@@ -202,23 +207,36 @@ export default function Room({ params }: { params: { id: string } }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTyping, room]);
 
-  const onSelectFile = (e: any | null) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    setImage([...images, e?.target!.files]);
+  const onSelectFile = (e: ChangeEvent<HTMLInputElement> | null) => {
+    if (!e || !e.target.files || e.target.files.length === 0) return;
 
-    let reader = new FileReader();
-    function readFile(index: number) {
-      if (index >= e?.target!.files.length) return;
-      let file = e?.target!.files[index];
-      reader.onload = function (a) {
-        setViewImage([...viewImages, a?.target!.result]);
-        readFile(index + 1);
-      };
-      reader.readAsDataURL(file);
-    }
-    readFile(0);
+    const selectedFiles = Array.from(e.target.files);
+
+    setImage([...images, ...selectedFiles]);
+
+    // for (let i = 0; i < e?.target!.files.length; i++) {
+    //   let reader = new FileReader();
+    //   reader.readAsDataURL(e?.target!.files[i]);
+    //   reader.onload = (a) => {
+    //     setViewImage([...viewImages, a?.target!.result?.toString()]);
+    //   };
+    // }
+
+    Promise.all(
+      selectedFiles.map((file) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            resolve(reader.result);
+          };
+        });
+      })
+    ).then((results) => {
+      // Update the viewImages state with the base64 data
+      setViewImage([...viewImages, ...results]);
+    });
   };
-
   return (
     <Layout>
       <>
@@ -243,7 +261,13 @@ export default function Room({ params }: { params: { id: string } }) {
           </span>
         </div>
       </div>
-      <div className="h-[calc(100%-184px)] w-full flex flex-col justify-end pl-[10px] pb-[20px]">
+      <div
+        style={{
+          height:
+            viewImages.length > 0 ? "calc(100% - 17.4rem)" : "calc(100% - 7.4rem)",
+        }}
+        className="w-full flex flex-col justify-end pl-[10px] pb-[20px]"
+      >
         {showScrollButton && (
           <button
             className="absolute right-10 bottom-15 cursor-pointer z-[999] bg-[#737d3c] rounded-md p-2"
@@ -316,25 +340,26 @@ export default function Room({ params }: { params: { id: string } }) {
         )}
         {emoji && <div></div>}
         {viewImages.length > 0 && (
-          <div className="relative w-full h-[5rem] bg-[rgba(0,0,0,0.75)] flex overflow-x-auto overflow-y-hidden items-center px-2">
+          <div className="relative w-full h-[10rem] bg-[rgba(0,0,0,0.75)] flex overflow-x-auto overflow-y-hidden items-center px-2">
             <div className="absolute justify-between flex flex-row px-4 gap-4 items-center">
               {viewImages.map((im, i = 0) => (
-                <div key={i++}>
-                  <Image src={im} alt={i.toString()} width="80" height="80" />
+                <div className="relative bg-[#1C1C1C] h-[8rem] items-center rounded-sm flex" key={i++}>
+                  <XSquare onClick={() => setViewImage((files) => files.filter((file) => file !== im))} height="20" className="cursor-pointer hover:text-red-500 rounded-sm absolute" style={{ right: -10, bottom: -9 }} />
+                  <Image src={im} alt={i.toString()} width="128" height="128" />
                 </div>
               ))}
             </div>
           </div>
         )}
       </>
-      <div className="w-full h-14 bg-black flex flex-row px-3 items-center">
+      <div className="w-full h-[4.5rem] bg-inherit flex flex-row px-3 items-center">
         <div
           className="items-center justify-between flex flex-row px-4"
           style={{
             backgroundColor: "#171717",
             width: "5%",
             borderRadius: "4px 0px 0px 4px",
-            height: "65%",
+            height: "60%",
           }}
         >
           <div className="flex group">
@@ -354,8 +379,9 @@ export default function Room({ params }: { params: { id: string } }) {
           style={{
             width: "89%",
             fontSize: "15px",
-            padding: "6.5px",
-            height: "65%",
+            paddingTop: "0.6rem",
+            paddingBottom: "0.6rem",
+            height: "60%",
             backgroundColor: "#171717",
             boxSizing: "border-box",
             boxShadow: "none",
@@ -392,7 +418,7 @@ export default function Room({ params }: { params: { id: string } }) {
             backgroundColor: "#171717",
             width: "8%",
             borderRadius: "0px 4px 4px 0px",
-            height: "65%",
+            height: "60%",
           }}
         >
           <ScanSearch
