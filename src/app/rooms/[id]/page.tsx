@@ -8,7 +8,7 @@ import {
   ScanSearch,
   ArrowDownNarrowWide,
   ArrowBigDown,
-  XSquare
+  XSquare,
 } from "lucide-react";
 import { PmRoom } from "strafe.js/dist/structures/Room";
 import Message from "@/components/Message";
@@ -264,7 +264,9 @@ export default function Room({ params }: { params: { id: string } }) {
       <div
         style={{
           height:
-            viewImages.length > 0 ? "calc(100% - 17.4rem)" : "calc(100% - 7.4rem)",
+            viewImages.length > 0
+              ? "calc(100% - 17.4rem)"
+              : "calc(100% - 7.4rem)",
         }}
         className="w-full flex flex-col justify-end pl-[10px] pb-[20px]"
       >
@@ -299,36 +301,36 @@ export default function Room({ params }: { params: { id: string } }) {
             <p>This is the start of your conversation</p>
           </div>
           <hr className="my-[15px] opacity-10 w-[85%]" />{" "}
-          {messages.map((message, index) => {
-            return (
-              <ContextMenu key={index}>
-                <ContextMenuTrigger>
-                  <Message
-                    messages={messages}
-                    message={message}
-                    attachments={message.attachments}
-                    index={index}
-                  />
-                </ContextMenuTrigger>
-                <ContextMenuContent>
-                  <ContextMenuItem>Reply</ContextMenuItem>
-                  <ContextMenuItem onClick={() => copyText!(message.content)}>
-                    Copy Text
-                  </ContextMenuItem>
-                  {message.author.id == client?.user?.id && (
-                    <>
-                      <ContextMenuItem>Edit Message</ContextMenuItem>
-                      <ContextMenuItem>Delete Message</ContextMenuItem>
-                    </>
-                  )}
-                  <div className="w-full h-0.5 rounded-full bg-gray-500" />
-                  <ContextMenuItem onClick={() => copyText!(message.id)}>
-                    Copy Message ID
-                  </ContextMenuItem>
-                </ContextMenuContent>
-              </ContextMenu>
-            );
-          })}
+            {messages.map((message, index) => {
+              return (
+                <ContextMenu key={index}>
+                  <ContextMenuTrigger>
+                    <Message
+                      messages={messages}
+                      message={message}
+                      attachments={message.attachments}
+                      index={index}
+                    />
+                  </ContextMenuTrigger>
+                  <ContextMenuContent>
+                    <ContextMenuItem>Reply</ContextMenuItem>
+                    <ContextMenuItem onClick={() => copyText!(message.content)}>
+                      Copy Text
+                    </ContextMenuItem>
+                    {message.author.id == client?.user?.id && (
+                      <>
+                        <ContextMenuItem>Edit Message</ContextMenuItem>
+                        <ContextMenuItem>Delete Message</ContextMenuItem>
+                      </>
+                    )}
+                    <div className="w-full h-0.5 rounded-full bg-gray-500" />
+                    <ContextMenuItem onClick={() => copyText!(message.id)}>
+                      Copy Message ID
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                </ContextMenu>
+              );
+            })}
         </ul>
       </div>
       <>
@@ -338,13 +340,29 @@ export default function Room({ params }: { params: { id: string } }) {
             is typing...
           </div>
         )}
-        {emoji && <div></div>}
+        {emoji && (
+          <div className="relative w-[2rem] h-[3rem] bg-[rgba(0,0,0,0.75)] flex overflow-x-hidden overflow-y-auto px-2">
+            
+          </div>
+        )}
         {viewImages.length > 0 && (
           <div className="relative w-full h-[10rem] bg-[rgba(0,0,0,0.75)] flex overflow-x-auto overflow-y-hidden items-center px-2">
             <div className="absolute justify-between flex flex-row px-4 gap-4 items-center">
               {viewImages.map((im, i = 0) => (
-                <div className="relative bg-[#1C1C1C] h-[8rem] items-center rounded-sm flex" key={i++}>
-                  <XSquare onClick={() => setViewImage((files) => files.filter((file) => file !== im))} height="20" className="cursor-pointer hover:text-red-500 rounded-sm absolute" style={{ right: -10, bottom: -9 }} />
+                <div
+                  className="relative bg-[#1C1C1C] h-[8rem] items-center rounded-sm flex"
+                  key={i++}
+                >
+                  <XSquare
+                    onClick={() =>
+                      setViewImage((files) =>
+                        files.filter((file) => file !== im)
+                      )
+                    }
+                    height="20"
+                    className="cursor-pointer hover:text-red-500 rounded-sm absolute"
+                    style={{ right: -10, bottom: -9 }}
+                  />
                   <Image src={im} alt={i.toString()} width="128" height="128" />
                 </div>
               ))}

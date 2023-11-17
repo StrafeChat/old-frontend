@@ -2,26 +2,35 @@ import Image from "next/image";
 import Markdown, { Components } from "react-markdown";
 import ReactTimeago from "react-timeago";
 import remarkGfm from "remark-gfm";
+import emojis from "../resources/emojis.json";
+import Twemoji from "react-twemoji";
+import { useEffect, useState } from "react";
+import React from "react";
 
 const components: Partial<Components> = {
-  // p: ({ node }) => {
-  //   console.log(node)
-  //   return (
-  //     <>
-  //       {node?.children.map((child, index) => (
-  //         <div className="text-md" key={index}>
-  //           {child.tagName != "code" ? (
-  //             child
-  //           ) : (
-  //             <div className="bg-neutral-700 w-fit p-1 my-1 rounded-md">
-  //               {child.children.map((child: any) => child.value)}
-  //             </div>
-  //           )}
-  //         </div>
-  //       ))}
-  //     </>
-  //   );
-  // },
+  p: ({ node }) => {
+    const regex = /:(\w+):/g;
+    switch (node?.type) {
+      case "element":
+        return (
+          <>
+            {node.children.map((child, key) => {
+              switch (child.type) {
+                case "text":
+                  return (
+                    <p key={key}>
+                      {child.value.replace(
+                        regex,
+                        (_match, code) => (emojis as any)[code] ?? `:${code}:`
+                      )}
+                    </p>
+                  );
+              }
+            })}
+          </>
+        );
+    }
+  },
   h1: ({ node }) => {
     return (
       <>
@@ -54,17 +63,17 @@ const components: Partial<Components> = {
       </>
     );
   },
-  code: ({node}) => {
+  code: ({ node }) => {
     return (
       <>
-      {node?.children.map((child, index) => {
-        switch(child.type) {
-          case "text":
-            return <code className="bg-black p-0.5">{child.value}</code>
-        }
-      })}
+        {node?.children.map((child, index) => {
+          switch (child.type) {
+            case "text":
+              return <code className="bg-black p-0.5">{child.value}</code>;
+          }
+        })}
       </>
-    )
+    );
   },
   blockquote: ({ node }) => {
     return (
@@ -85,40 +94,40 @@ const components: Partial<Components> = {
   table: ({ node }) => {
     return (
       <table className="bg-stone-900 border">
-        {node?.children.map((child) => {
+        {node?.children.map((child, key) => {
           switch (child.type) {
             case "element":
               switch (child.tagName) {
                 case "thead":
                   return (
-                    <thead>
-                      {child.children.map((child) => {
+                    <thead key={key}>
+                      {child.children.map((child, key) => {
                         switch (child.type) {
                           case "element":
                             switch (child.tagName) {
                               case "tr":
                                 return (
-                                  <tr>
+                                  <tr key={key}>
                                     {child.children.map((child) => {
                                       switch (child.type) {
                                         case "element":
                                           switch (child.tagName) {
                                             case "th":
                                               return (
-                                                <>
+                                                <React.Fragment key={key}>
                                                   {child.children.map(
-                                                    (child) => {
+                                                    (child, key) => {
                                                       switch (child.type) {
                                                         case "text":
                                                           return (
-                                                            <th className="border p-2">
+                                                            <th key={key} className="border p-2">
                                                               {child.value}
                                                             </th>
                                                           );
                                                       }
                                                     }
                                                   )}
-                                                </>
+                                                </React.Fragment>
                                               );
                                           }
                                       }
@@ -133,20 +142,20 @@ const components: Partial<Components> = {
                 case "tbody":
                   return (
                     <tbody>
-                      {child.children.map((child) => {
+                      {child.children.map((child, key) => {
                         switch (child.type) {
                           case "element":
                             switch (child.tagName) {
                               case "tr":
                                 return (
-                                  <tr>
-                                    {child.children.map((child) => {
+                                  <tr key={key}>
+                                    {child.children.map((child, key) => {
                                       switch (child.type) {
                                         case "element":
                                           switch (child.tagName) {
                                             case "td":
                                               return (
-                                                <>
+                                                <React.Fragment key={key}>
                                                   {child.children.map(
                                                     (child) => {
                                                       switch (child.type) {
@@ -159,7 +168,7 @@ const components: Partial<Components> = {
                                                       }
                                                     }
                                                   )}
-                                                </>
+                                                </React.Fragment>
                                               );
                                           }
                                       }
@@ -185,7 +194,11 @@ const components: Partial<Components> = {
           switch (child.type) {
             case "text":
               return (
-                <a id="message-link" className="text-[#737d3c] hover:text-[#737d3c] underline" href={child.value}>
+                <a
+                  id="message-link"
+                  className="text-[#737d3c] hover:text-[#737d3c] underline"
+                  href={child.value}
+                >
                   {child.value}
                 </a>
               );
@@ -215,9 +228,13 @@ export default function Message({
         <li key={index} className="flex gap-2.5 message break-normal">
           <div className="w-10 flex-shrink-0"></div>
           <div style={{ whiteSpace: "pre-line" }} className="w-full">
-            <Markdown remarkPlugins={plugins} components={components}>
-              {message.content}
-            </Markdown>
+            <Twemoji
+              options={{ className: `message-emoji${!/^([\p{Emoji}\s]+|:\w+:)$/u.test(message.content.trim()) ? "-text" : ""}` }}
+            >
+              <Markdown remarkPlugins={plugins} components={components}>
+                {message.content}
+              </Markdown>
+            </Twemoji>
           </div>
           {/* {attachments?.map((attachment) => (
             <Image key={attachment.url} src={attachment} alt='e' /> 
@@ -248,9 +265,16 @@ export default function Message({
               </span>
             </div>
             <div style={{ whiteSpace: "pre-line" }} className="w-full">
-              <Markdown remarkPlugins={plugins} components={components}>
-                {message.content}
-              </Markdown>
+              <Twemoji
+                options={{
+                  className: `message-emoji${!/^([\p{Emoji}\s]+|:\w+:)$/u.test(message.content.trim()) ? "-text" : ""}`,
+                }}
+              >
+                {" "}
+                <Markdown remarkPlugins={plugins} components={components}>
+                  {message.content}
+                </Markdown>
+              </Twemoji>
             </div>
           </div>
         </li>
@@ -279,9 +303,13 @@ export default function Message({
             </span>
           </div>
           <div style={{ whiteSpace: "pre-line" }} className="w-full">
-            <Markdown remarkPlugins={plugins} components={components}>
-              {message.content}
-            </Markdown>
+            <Twemoji
+              options={{ className: `message-emoji${!/^([\p{Emoji}\s]+|:\w+:)$/u.test(message.content.trim()) ? "-text" : ""}` }}
+            >
+              <Markdown remarkPlugins={plugins} components={components}>
+                {message.content}
+              </Markdown>
+            </Twemoji>
           </div>
         </div>
       </li>

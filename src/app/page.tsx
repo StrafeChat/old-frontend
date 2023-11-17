@@ -1,14 +1,16 @@
 "use client";
+import Layout from "@/components/Layout";
 import Header from "@/components/Header";
 import Body from "@/components/Body";
 import { useClient } from "@/context/ClientContext";
 import { useState, useEffect } from "react";
-import Layout from "@/components/Layout";
+import UserSettingsModal from "@/components/modals/UserSettingsModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCompass, faNewspaper, faGear } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   const [greeting, setGreeting] = useState("");
+  const [showSettings, setShowSettings] = useState(false);
   const clientContext = useClient();
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function Home() {
     {greeting}, {clientContext.client?.user?.displayName || clientContext.client?.user?.username}.
   </h1>
   <p className={`font-md text-xl text-[#323C31]-secondaryText`}>
-    Welcome to Strafe, let's get started.
+    Welcome to Strafe, let&apos;s get started.
   </p>
   <div className="grid grid-cols-2 gap-4 mt-4">
     <div
@@ -72,7 +74,8 @@ export default function Home() {
       </div>
     </div>
           <div
-            className={`bg-[#737d3c] rounded-lg p-4 flex items-center`}
+            className={`bg-[#737d3c] rounded-lg p-4 flex items-center cursor-pointer`}
+            onClick={() => setShowSettings(true)}
           >
             <div className="flex-shrink-0">
             <FontAwesomeIcon icon={faGear} className="text-4xl" />
@@ -97,10 +100,12 @@ export default function Home() {
               </p>
             </div>
           </div>    
-  </div>
-</div>
-
+      </div>
+    </div>
       </Body>
+      {showSettings && (
+        <UserSettingsModal show={showSettings} set={setShowSettings} />
+      )}
     </Layout>
   );
 }
