@@ -1,4 +1,4 @@
-{
+export const emojis: Record<string, string> = {
     "100": "💯",
     "1234": "🔢",
     "grinning": "😀",

@@ -1,5 +1,5 @@
 import React from 'react';
-import quotes from "@/resources/loading.json";
+import quotes from "@/assets/loading.json";
 import Image from 'next/image'
 export default function LoadingScreen() {
 

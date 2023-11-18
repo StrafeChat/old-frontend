@@ -2,9 +2,8 @@ import Image from "next/image";
 import Markdown, { Components } from "react-markdown";
 import ReactTimeago from "react-timeago";
 import remarkGfm from "remark-gfm";
-import emojis from "../resources/emojis.json";
+import emojis from "../../assets/emojis";
 import Twemoji from "react-twemoji";
-import { useEffect, useState } from "react";
 import React from "react";
 
 const components: Partial<Components> = {

@@ -7,7 +7,7 @@
 :root {
   --bg-primary: #262626;
   --bg-secondary: rgb(32, 32, 32);
-  --bg-guilds: #171717;
+  --bg-spaces: #171717;
   --bg-rooms: #1c1c1c;
   --bg-user-panel: rgb(12, 12, 12);
   --bg-ui: rgb(24, 24, 24);
@@ -15,9 +15,40 @@
   --input: rgb(42, 42, 42);
   --text-secondary: rgb(107, 114, 128);
   --accent-primary: rgb(255, 90, 90);
+  --message-hover: rgb(25,25,25);
   color: white;
 
   font-family: "Poppins", sans-serif;
+}
+
+html {
+  overflow: hidden;
+}
+
+ul {
+  overflow-y: auto;
+}
+
+ul.messages {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  li.message {
+    display: flex;
+    gap: 0.5rem;
+
+    &:hover {
+     background: var(--message-hover); 
+    }
+
+    &.parent {
+      padding-top: 0.875rem;
+    }
+  }
 }
 
 body {
@@ -160,7 +191,7 @@ img.message-emoji-text {
 }
 
 div.app-wrapper {
-  width: 100%;
+  flex-grow: 1;
   height: 100%;
 
   header {
@@ -206,16 +237,40 @@ label.title {
   @apply font-bold uppercase;
 }
 
-ul.guild-sidebar-horizontal {
-  @apply bg-[var(--bg-guilds)] w-16 min-h-full p-2 flex flex-col items-center;
+// ul.space-sidebar-horizontal {
+//   @apply bg-[var(--bg-spaces)] w-16 min-h-full p-2 flex flex-col items-center;
+// }
+
+ul.spaces {
+  background: var(--bg-spaces);
+  
+  &.vertical {
+    min-width: 72px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center
+  }
+
+  // &.horizontal {
+  //   min-height: 100%;
+  //   height: 72px;
+  //   padding: 0.5rem;
+  //   display: flex;
+  //   align-items: center
+  // }
+
+
 }
 
-ul.guild-sidebar-vertical {
-  @apply bg-[var(--bg-guilds)] min-w-full h-16 p-2 flex items-center;
-}
-
-div.room-sidebar {
-  @apply bg-[var(--bg-rooms)] w-52 h-full flex flex-col items-center;
+ul.rooms {
+  // @apply bg-[var(--bg-rooms)] w-52 h-full flex flex-col items-center;
+  background: var(--bg-rooms);
+  min-width: 240px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 div[role="menu"] {
@@ -288,10 +343,6 @@ button[role="switch"]:has(> span[data-state="checked"]) {
 
 button[role="switch"]:has(> span[data-state="unchecked"]) {
   @apply bg-gray-500;
-}
-
-li.message:hover {
-  background: rgba(0, 0, 0, 0.25);
 }
 
 button[role="switch"] span {

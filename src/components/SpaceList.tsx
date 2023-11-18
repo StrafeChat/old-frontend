@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable jsx-a11y/alt-text */
 import { useClient } from "@/context/ClientContext";
 import { useState, useEffect } from "react";
 import UserSettingsModal from "./modals/UserSettingsModal";
@@ -13,20 +11,23 @@ import { BedDouble, Code2, PencilIcon, PlayCircle } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCompass } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import Image from "next/image";
 
-export default function GuildList({ orientation }: { orientation: string }) {
+export default function SpaceList({ orientation }: { orientation: string }) {
   const { client, status } = useClient();
   const [showSettings, setShowSettings] = useState(false);
   const [statusColor, setStatusColor] = useState("");
 
   return (
-    <ul className={`guild-sidebar-${orientation}`}>
+    <ul className={`spaces ${orientation}`}>
       <ContextMenu>
         <ContextMenuTrigger className="relative rounded-full hover:bg-stone-800">
-          <img
+          <Image
             src={client?.user?.avatar ? client.user.avatar : ""}
-            className="border border-[#2F3136] w-10 h-10 select-none p-0.5 rounded-full"
+            className="border border-[#2F3136] select-none p-0.5 rounded-full"
             alt="profile picture"
+            width={48}
+            height={48}
           />
           <div
             className={`w-3 h-3 status-${status} absolute bottom-0 right-0 border border-[#2F3136] rounded-full`}
@@ -98,7 +99,7 @@ export default function GuildList({ orientation }: { orientation: string }) {
 
       <div
         className={`${
-          orientation == "horizontal"
+          orientation == "vertical"
             ? "w-[35px] h-0.5 my-1.5"
             : "w-0.5 h-[35px] mx-1"
         } bg-gray-200 opacity-30 rounded-full`}

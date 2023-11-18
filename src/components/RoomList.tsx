@@ -13,10 +13,9 @@ export default function RoomList() {
   const pathname = usePathname();
 
   return (
-    <div className="room-sidebar select-none">
+    <ul className="rooms select-none">
       <div className="w-full h-full flex flex-col items-start">
         <div className="w-full px-4 h-full flex flex-col">
-          {/* We need to figure out what to do here next lol */}
           <b>
             <div className="flex items-center justify-between">
               <h1 className="p-1 fon text-lg text-left mt-2.5">
@@ -71,7 +70,7 @@ export default function RoomList() {
           </ul>
         </div>
       </div>
-    </div>
+    </ul>
   );
 }
 
