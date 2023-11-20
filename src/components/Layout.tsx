@@ -10,8 +10,8 @@ export default function Layout({ children }: { children: JSX.Element[] | JSX.Ele
     if (!client || !ready) return <LoadingScreen />;
 
     return (
-        <div className={`min-w-full h-full flex border-b border-gray-900 ${(serverListPos == "top" || serverListPos == "bottom") && "flex-col"}`}>
-            {((serverListPos == "left" || serverListPos == "top") && <GuildList orientation={serverListPos == "left" ? "vertical" : "hotizontal"} />)}
+        <div className={`overflow-hidden min-w-full h-full flex border-b border-gray-900 ${(serverListPos == "top" || serverListPos == "bottom") && "flex-col"}`}>
+            {((serverListPos == "left" || serverListPos == "top") && <GuildList orientation={serverListPos == "left" ? "vertical" : "horizontal"} />)}
             <div className="flex-grow flex">
                 <RoomList />
                 <div className="app-wrapper">

@@ -27,28 +27,39 @@ export default function AddFriendModal({
       query: "",
     },
   });
-  const [isBrowser, setIsBrowser] = useState(false);
   const { client } = useClient();
 
   useEffect(() => {
-    setIsBrowser(true);
+    const handleOutsideClick = (event: MouseEvent) => {
+      if ((event.target as any).id === "backdrop") set(false);
+    };
 
-    if (typeof window != "undefined") {
-      setTimeout(() => {
-        document.addEventListener("click", (event) => {
-          if ((event.target as any).id === "backdrop") set(false);
-        });
-      }, 1000);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") set(false);
+    };
 
-      setTimeout(() => {
-        document.addEventListener("keydown", (event) => {
-          if (event.key === "Escape") set(false);
-        });
-      }, 1000);
+    if (typeof window !== "undefined") {
+      document.addEventListener("click", handleOutsideClick);
+      document.addEventListener("keydown", handleKeyDown);
     }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        document.removeEventListener("click", handleOutsideClick);
+        document.removeEventListener("keydown", handleKeyDown);
+      }
+    };
   }, [set]);
 
   const handleSubmit = async (values: AddFriendData) => {
+    console.log(values);
+
+    // Check if values.query is empty before further processing
+    if (!values.query.trim()) {
+      console.error("Query is empty");
+      return;
+    }
+
     const result = values.query.split("#");
     await client?.addFriend(result[0], result[1]);
     set(false);
@@ -61,7 +72,8 @@ export default function AddFriendModal({
           <header>Add Friend</header>
           <div className="body">
             <div className="row center">
-              <Input placeholder="strafe#0001" />
+              {/* Integrate your Input component with react-hook-form */}
+              <Input {...form.register("query")} placeholder="strafe#0001" />
             </div>
             <div className="row center">
               <Button type="button" onClick={() => set(false)}>

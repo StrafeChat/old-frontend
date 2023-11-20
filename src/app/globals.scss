@@ -21,13 +21,14 @@
   font-family: "Poppins", sans-serif;
 }
 
-html {
-  overflow: hidden;
+input[type=file], /* FF, IE7+, chrome (except button) */
+input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
+    cursor: pointer; 
 }
 
-ul {
-  overflow-y: auto;
-}
+// ul {
+//   overflow-y: auto;
+// }
 
 ul.messages {
   display: flex;
@@ -55,7 +56,7 @@ body {
   width: 100%;
   height: 100%;
   background: var(--bg-primary);
-  overflow: hidden;
+  // overflow: hidden;
 }
 
 div.form-wrapper {
@@ -191,11 +192,11 @@ img.message-emoji-text {
 }
 
 div.app-wrapper {
-  flex-grow: 1;
+  width: 100%;
   height: 100%;
 
   header {
-    width: 100%;
+    width: 100;
     height: 3rem;
     border-bottom-right-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
@@ -250,6 +251,13 @@ ul.spaces {
     display: flex;
     flex-direction: column;
     align-items: center
+  }
+
+  &.horizontal {
+    min-height: 72px;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
   }
 
   // &.horizontal {

@@ -36,7 +36,7 @@ export default function Room({ params }: { params: { id: string } }) {
 
   return (
     <Layout>
-      <>{data.room && <>{data.room.type == 0 && <PrivateMessageRoom room={data.room} />}</>}</>
+      <div className="w-full h-full">{data.room && <>{data.room.type == 0 && <PrivateMessageRoom room={data.room} />}</>}</div>
     </Layout>
   );
 }

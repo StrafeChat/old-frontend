@@ -16,7 +16,6 @@ import Image from "next/image";
 export default function SpaceList({ orientation }: { orientation: string }) {
   const { client, status } = useClient();
   const [showSettings, setShowSettings] = useState(false);
-  const [statusColor, setStatusColor] = useState("");
 
   return (
     <ul className={`spaces ${orientation}`}>
@@ -113,7 +112,7 @@ export default function SpaceList({ orientation }: { orientation: string }) {
       <Link href="/">
         {/* Make this trigger a modal to create a space*/}
         <div
-          className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center my-[3px]"
+          className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center m-[3px]"
           title="Add Space"
         >
           <FontAwesomeIcon icon={faPlus} className="w-7 h-7 text-[#737d3c]" />

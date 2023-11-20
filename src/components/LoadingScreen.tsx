@@ -8,7 +8,7 @@ export default function LoadingScreen() {
            
                     
                     <div className='flex flex-row items-center justify-center'>
-                    <Image className='select-none' src="/Spinner-1s-200px.svg" width={86} height={86} alt='loader' />
+                    <Image className='select-none' src="/Spinner-1s-200px.svg" priority width={86} height={86} alt='loader' />
                     </div>
                     <br></br>
                 
