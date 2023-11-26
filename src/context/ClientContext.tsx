@@ -62,6 +62,10 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
       if ((event.target as HTMLElement).id != "chatbox") event.preventDefault();
     });
 
+    if (!cookie.get("token")) {
+      window.location.href = "/login";
+    }
+
     if (!client) {
       const newClient = new Client();
       setClient(newClient);
@@ -69,7 +73,7 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
         if (newClient.user)
           setServerListPos(newClient.user.preferences!.serverListPos);
         setReady(true);
-        setStatus(newClient.user?.status.name!);
+        setStatus(newClient.user?.status.status!);
         newClient.getFriends().then((friends) => {
           if (friends != null) setFriends(friends);
         });
@@ -87,8 +91,6 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
           window.location.href = "/login";
         }
       });
-  } else if (!cookie.get("token")) {
-    window.location.href = "/login";
   }
   }, [client, pathname]);
 
@@ -100,7 +102,7 @@ export const ClientProvider = ({ children }: { children: JSX.Element }) => {
 
     client?.on("presenceUpdate", (data) => {
       console.log(data);
-      if (data.user.id == client.user!.id) return setStatus(data.status.name);
+      if (data.user.id == client.user!.id) return setStatus(data.status.status);
 
       setFriends((prevFriends: any[]) => {
         return prevFriends.map((friend) => {

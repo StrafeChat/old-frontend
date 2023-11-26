@@ -22,7 +22,7 @@ export default function SpaceList({ orientation }: { orientation: string }) {
       <ContextMenu>
         <ContextMenuTrigger className="relative rounded-full hover:bg-stone-800">
           <Image
-            src={client?.user?.avatar ? client.user.avatar : ""}
+            src={`${client?.user?.avatar ? client.user.avatar : ""}`}
             className="border border-[#2F3136] select-none p-0.5 rounded-full"
             alt="profile picture"
             width={48}

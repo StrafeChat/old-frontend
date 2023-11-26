@@ -105,7 +105,7 @@ function AccountSettings({ client }: { client: Client }) {
                 width={80}
                 height={80}
                 style={{ objectFit: "cover", width: "80px", height: "80px" }}
-                src={avatar ? avatar : ""}
+                src={`${avatar ? avatar : ""}`}
                 className="absolute top-[4rem] rounded-full border-4 border-[#1E1F22] group-hover:opacity-75"
                 alt="profile picture"
               />
@@ -227,7 +227,6 @@ function AccountSettings({ client }: { client: Client }) {
                 Tag
               </p>
               <div className="flex mx-4 justify-between">
-                {/* < style={{ paddingTop: '0.3%', fontSize: '12px', color: '#E4E0E0' }}>#{client?.user?.tag}</> */}
                 <div className="bg-[var(--input)] outline-none rounded-md flex items-center">
                   <span
                     style={{
